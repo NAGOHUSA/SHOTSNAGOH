@@ -383,13 +383,13 @@ function getTextY() {
     const padding = state.padding;
     switch (state.textPosition) {
         case 'top':
-            return padding;
+            return padding + state.fontSize + 20; // Extra padding to prevent cutoff
         case 'middle':
             return (canvas.height - state.fontSize) / 2;
         case 'bottom':
-            return canvas.height - padding - state.fontSize;
+            return canvas.height - padding - state.fontSize - 20;
         default:
-            return padding;
+            return padding + state.fontSize + 20;
     }
 }
 
