@@ -3,494 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAGOH Shots - App Screenshot Maker</title>
+    <title>NAGOH Shots - App Store Screenshot Maker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        :root {
-            --cream:    #fdf8f0;
-            --parchmt:  #f5ede0;
-            --warm:     #ede3d5;
-            --border:   #e0d4c4;
-            --border2:  #d4c4b0;
-            --muted:    #b5a090;
-            --dim:      #8a7868;
-            --sub:      #6b5e50;
-            --ink:      #3d2f24;
-            --deep:     #2a1f16;
-
-            --rose:     #e8524a;
-            --rose-lt:  #fce8e7;
-            --rose-md:  #f5c4c2;
-            --teal:     #2a9d8f;
-            --teal-lt:  #e0f5f3;
-            --teal-md:  #a0dcd6;
-            --gold:     #e9a028;
-            --gold-lt:  #fdf0d5;
-            --gold-md:  #f7d08a;
-            --plum:     #8b5cf6;
-            --plum-lt:  #f0ebff;
-            --plum-md:  #c4b0f8;
-            --sage:     #4a7c59;
-            --sage-lt:  #e8f4eb;
-            --sage-md:  #a8d4b4;
-
-            --sans:     'DM Sans', sans-serif;
-            --serif:    'Fraunces', serif;
-        }
-
-        html, body {
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            background: var(--cream);
-            color: var(--ink);
-            font-family: var(--sans);
-        }
-
-        body {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ── TOPBAR ── */
-        .topbar {
-            height: 60px;
-            display: flex;
-            align-items: center;
-            padding: 0 1.5rem;
-            gap: 1rem;
-            background: var(--deep);
-            flex-shrink: 0;
-            position: relative;
-            z-index: 100;
-            border-bottom: 3px solid var(--rose);
-        }
-
-        .wordmark {
-            font-family: var(--serif);
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 0.02em;
-        }
-
-        .wordmark em {
-            color: var(--gold);
-            font-style: italic;
-        }
-
-        .tagline {
-            font-size: 0.65rem;
-            color: rgba(255, 255, 255, 0.45);
-            letter-spacing: 0.08em;
-            font-weight: 300;
-            line-height: 1;
-        }
-
-        .tsep { flex: 1; }
-
-        .tpill {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            color: rgba(255, 255, 255, 0.65);
-        }
-
-        .tbtn {
-            font-family: var(--sans);
-            font-size: 0.68rem;
-            font-weight: 500;
-            padding: 6px 14px;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.65);
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.15s;
-        }
-
-        .tbtn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-        }
-
-        /* ── MAIN CONTENT ── */
-        .main {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 1.5rem;
-            padding: 1.5rem;
-            overflow: hidden;
-        }
-
-        .canvas-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            min-height: 0;
-        }
-
-        .canvas-wrapper {
-            flex: 1;
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            min-height: 0;
-        }
-
-        canvas {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .controls {
-            display: flex;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            font-family: var(--sans);
-            font-size: 0.8rem;
-            font-weight: 500;
-            padding: 9px 16px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s;
-            letter-spacing: 0.02em;
-        }
-
-        .btn-primary {
-            background: var(--teal);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1f8a7a;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(42, 157, 143, 0.25);
-        }
-
-        .btn-secondary {
-            background: var(--warm);
-            color: var(--ink);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: var(--parchmt);
-            border-color: var(--rose);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* ── SIDEBAR ── */
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            overflow-y: auto;
-            padding-right: 0.5rem;
-        }
-
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .sidebar::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        .panel {
-            background: white;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.2rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .panel-title {
-            font-family: var(--serif);
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--ink);
-            margin-bottom: 1rem;
-            display: block;
-            letter-spacing: 0.01em;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-group:last-child {
-            margin-bottom: 0;
-        }
-
-        label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--sub);
-            margin-bottom: 0.5rem;
-            letter-spacing: 0.02em;
-            text-transform: uppercase;
-        }
-
-        input[type="text"],
-        input[type="file"],
-        input[type="color"],
-        input[type="range"],
-        select,
-        textarea {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            font-family: var(--sans);
-            font-size: 0.8rem;
-            color: var(--ink);
-            transition: border-color 0.15s, box-shadow 0.15s;
-        }
-
-        input[type="text"]:focus,
-        input[type="file"]:focus,
-        input[type="color"]:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--rose);
-            box-shadow: 0 0 0 3px var(--rose-lt);
-        }
-
-        input[type="range"] {
-            padding: 0;
-            height: 5px;
-            -webkit-appearance: none;
-            appearance: none;
-            background: var(--border);
-            border: none;
-            border-radius: 10px;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--teal);
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(42, 157, 143, 0.3);
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--teal);
-            cursor: pointer;
-            border: none;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 70px;
-        }
-
-        .drop-zone {
-            border: 2px dashed var(--border2);
-            border-radius: 8px;
-            padding: 1.2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            background: var(--rose-lt);
-        }
-
-        .drop-zone:hover {
-            border-color: var(--rose);
-            background: #fff3f1;
-        }
-
-        .drop-zone.active {
-            border-color: var(--rose);
-            background: #fff1ef;
-        }
-
-        .drop-zone-text {
-            font-size: 0.8rem;
-            color: var(--dim);
-            font-weight: 500;
-        }
-
-        .device-frame {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .frame-option {
-            padding: 9px 12px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            font-size: 0.8rem;
-            text-align: center;
-            transition: all 0.15s;
-            font-weight: 500;
-            color: var(--sub);
-        }
-
-        .frame-option:hover {
-            border-color: var(--rose);
-            background: var(--rose-lt);
-        }
-
-        .frame-option.active {
-            border-color: var(--teal);
-            background: var(--teal-lt);
-            color: var(--teal);
-        }
-
-        .text-options {
-            display: flex;
-            gap: 0.6rem;
-            margin-top: 0.6rem;
-        }
-
-        button.format-btn {
-            flex: 1;
-            padding: 7px;
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            background: white;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.8rem;
-            transition: all 0.15s;
-            color: var(--sub);
-        }
-
-        button.format-btn:hover {
-            border-color: var(--gold);
-            background: var(--gold-lt);
-        }
-
-        button.format-btn.active {
-            background: var(--gold);
-            color: white;
-            border-color: var(--gold);
-        }
-
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 0.6rem;
-        }
-
-        .action-buttons .btn {
-            width: 100%;
-        }
-
-        .info-badge {
-            background: var(--warm);
-            border-radius: 4px;
-            padding: 6px 8px;
-            font-size: 0.7rem;
-            color: var(--dim);
-            margin-top: 0.5rem;
-        }
-
-        .color-note {
-            font-size: 0.7rem;
-            color: var(--muted);
-            margin-top: 0.4rem;
-        }
-
-        @media (max-width: 1024px) {
-            .main {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .sidebar {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-                max-height: 300px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main {
-                padding: 1rem;
-                gap: 0.75rem;
-            }
-
-            .canvas-wrapper {
-                padding: 1rem;
-                min-height: 300px;
-            }
-
-            .sidebar {
-                grid-template-columns: 1fr;
-                max-height: none;
-            }
-
-            .topbar {
-                padding: 0 1rem;
-            }
-
-            .wordmark {
-                font-size: 1.1rem;
-            }
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <!-- ── TOPBAR ── -->
     <div class="topbar">
         <div class="wordmark">NAGOH <em>Shots</em></div>
-        <div class="tagline">App Screenshot Maker</div>
+        <div class="tagline">App Store Screenshot Maker</div>
         <div class="tsep"></div>
-        <div class="tpill">shots.nagoh.us</div>
+        <div class="tpill">✓ App Store Compliant</div>
         <button class="tbtn" id="downloadBtn" disabled>Download PNG</button>
     </div>
 
     <!-- ── MAIN CONTENT ── -->
     <div class="main">
+        <!-- Canvas Section -->
         <div class="canvas-section">
             <div class="canvas-wrapper" id="canvasWrapper">
                 <canvas id="canvas"></canvas>
@@ -501,335 +31,200 @@
             </div>
         </div>
 
+        <!-- Sidebar with Panels -->
         <div class="sidebar">
-            <!-- Background Panel -->
+            <!-- Device Selection Panel -->
             <div class="panel">
-                <label class="panel-title">Background</label>
-                <div class="form-group">
-                    <label>Color</label>
-                    <input type="color" id="bgColor" value="#fdf8f0">
+                <label class="panel-title">Device Type</label>
+                <div class="device-grid" id="deviceGrid"></div>
+                <div class="compliance-note">
+                    ✓ <span id="selectedDims">1290 × 2796</span><br>
+                    <span id="selectedDevice">iPhone 16 Pro</span>
                 </div>
             </div>
 
-            <!-- Screenshot Panel -->
+            <!-- Theme/Palette Panel -->
             <div class="panel">
-                <label class="panel-title">Screenshot</label>
-                <div class="drop-zone" id="dropZone">
-                    <div class="drop-zone-text">Drop image here<br>or click to select</div>
+                <label class="panel-title">Theme</label>
+                <div class="form-group">
+                    <select id="paletteSelect">
+                        <option value="">— No preset yet —</option>
+                        <option value="nagoh-classic">NAGOH Classic</option>
+                        <option value="modern-minimal">Modern Minimal</option>
+                        <option value="vibrant-tech">Vibrant Tech</option>
+                        <option value="sunset">Sunset</option>
+                        <option value="ocean">Ocean</option>
+                        <option value="nature">Nature</option>
+                        <option value="dark-mode">Dark Mode</option>
+                    </select>
+                    <button class="btn btn-secondary" id="savePaletteBtn" style="width: 100%; margin-top: 0.6rem;">+ Save</button>
+                </div>
+            </div>
+
+            <!-- Colors Panel -->
+            <div class="panel">
+                <label class="panel-title">Colors</label>
+                <div class="color-row">
+                    <div class="form-group">
+                        <label>Background</label>
+                        <input type="color" id="bgColor" value="#fdf8f0">
+                    </div>
+                    <div class="form-group">
+                        <label>Accent</label>
+                        <input type="color" id="accentColor" value="#e8524a">
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="form-group">
+                        <label>Text</label>
+                        <input type="color" id="textColor" value="#3d2f24">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Background Style Panel -->
+            <div class="panel">
+                <label class="panel-title">Background Style</label>
+                <div class="form-group">
+                    <label>Style</label>
+                    <div class="bg-style-grid">
+                        <button class="style-option active" data-style="solid">Solid</button>
+                        <button class="style-option" data-style="gradient">Gradient</button>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Scale</label>
-                    <input type="range" id="scaleSlider" min="50" max="150" value="100">
-                    <div class="info-badge"><span id="scaleValue">100</span>%</div>
+                    <label>Upload Image</label>
+                    <button class="btn btn-secondary" id="bgUploadBtn" style="width: 100%;">Upload Image</button>
+                    <span class="hint">or paste from clipboard</span>
+                </div>
+            </div>
+
+            <!-- Font Panel -->
+            <div class="panel">
+                <label class="panel-title">Font</label>
+                <div class="form-group">
+                    <label>Family</label>
+                    <select id="fontSelect">
+                        <option value="Fraunces, serif">Fraunces</option>
+                        <option value="DM Sans, sans-serif">DM Sans</option>
+                        <option value="Georgia, serif">Georgia</option>
+                        <option value="monospace">Monospace</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Image Panel -->
+            <div class="panel">
+                <label class="panel-title">Image</label>
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-text">Pick file or drop on canvas →<br><span class="hint">or paste from clipboard</span></div>
+                </div>
+            </div>
+
+            <!-- Caption Panel -->
+            <div class="panel">
+                <label class="panel-title">Caption</label>
+                <div class="form-group">
+                    <textarea id="captionInput" placeholder="Add text *here*" maxlength="200"></textarea>
+                </div>
+                <div class="text-controls">
+                    <button class="format-btn" id="boldBtn" title="Bold">B</button>
+                    <button class="format-btn" id="italicBtn" title="Italic">I</button>
+                    <button class="format-btn" id="underlineBtn" title="Underline">U</button>
+                    <button class="format-btn" id="strikeBtn" title="Strikethrough">S</button>
+                </div>
+                <div class="form-group" style="margin-top: 0.8rem;">
+                    <label>Size</label>
+                    <input type="range" id="fontSize" min="12" max="72" value="24">
+                    <div class="info-badge"><span id="fontSizeValue">24</span>px</div>
+                </div>
+            </div>
+
+            <!-- Text Position Panel -->
+            <div class="panel">
+                <label class="panel-title">Position</label>
+                <div class="position-grid">
+                    <button class="position-btn active" data-position="top">Top</button>
+                    <button class="position-btn" data-position="middle">Middle</button>
+                    <button class="position-btn" data-position="bottom">Bottom</button>
+                </div>
+            </div>
+
+            <!-- Subtitle Panel -->
+            <div class="panel">
+                <label class="panel-title">Subtitle</label>
+                <textarea id="subtitleInput" placeholder="Add secondary text" maxlength="100" style="min-height: 50px;"></textarea>
+            </div>
+
+            <!-- Emojis Panel -->
+            <div class="panel">
+                <label class="panel-title">Emojis</label>
+                <div class="emoji-grid" id="emojiGrid"></div>
+            </div>
+
+            <!-- Screenshot Preset Panel -->
+            <div class="panel">
+                <label class="panel-title">Screenshot</label>
+                <div class="form-group">
+                    <label>Preset</label>
+                    <select id="presetSelect"></select>
                 </div>
             </div>
 
             <!-- Device Frame Panel -->
             <div class="panel">
-                <label class="panel-title">Device Frame</label>
-                <div class="device-frame" id="frameButtons">
-                    <button class="frame-option active" data-frame="none">None</button>
-                    <button class="frame-option" data-frame="iphone-14">iPhone 14 Pro</button>
-                    <button class="frame-option" data-frame="iphone-15">iPhone 15 Pro</button>
+                <label class="panel-title">Add a Device Frame?</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="frameToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <!-- Padding Panel -->
+            <div class="panel">
+                <label class="panel-title">Padding</label>
+                <div class="padding-grid">
+                    <button class="padding-btn active" data-padding="comfy">Comfy</button>
+                    <button class="padding-btn" data-padding="tight">Tight</button>
+                    <button class="padding-btn" data-padding="xtight">X-tight</button>
                 </div>
             </div>
 
-            <!-- Text Annotation Panel -->
+            <!-- 3D Perspective Panel -->
             <div class="panel">
-                <label class="panel-title">Add Text</label>
-                <div class="form-group">
-                    <label>Text</label>
-                    <textarea id="textInput" placeholder="Add text here..."></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Font</label>
-                    <select id="fontSelect">
-                        <option value="Georgia, serif">Georgia</option>
-                        <option value="Fraunces, serif">Fraunces</option>
-                        <option value="DM Sans, sans-serif">DM Sans</option>
-                        <option value="monospace">Monospace</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Size</label>
-                    <input type="range" id="fontSize" min="12" max="72" value="24">
-                    <div class="info-badge"><span id="fontSizeValue">24</span>px</div>
-                </div>
-                <div class="form-group">
-                    <label>Color</label>
-                    <input type="color" id="textColor" value="#3d2f24">
-                </div>
-                <div class="form-group">
-                    <label>Style</label>
-                    <div class="text-options">
-                        <button class="format-btn" id="boldBtn" data-style="bold">B</button>
-                        <button class="format-btn" id="italicBtn" data-style="italic">I</button>
-                    </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="btn btn-primary" id="addTextBtn">Add Text</button>
-                    <button class="btn btn-secondary" id="clearTextBtn">Clear Text</button>
-                </div>
+                <label class="panel-title">3D Perspective <span class="badge">BETA</span></label>
+                <input type="range" id="perspectiveSlider" min="0" max="30" value="0">
+                <div class="info-badge"><span id="perspectiveValue">0</span>°</div>
+            </div>
+
+            <!-- Status Bar Panel -->
+            <div class="panel">
+                <label class="panel-title">Hide Status Bar</label>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="hideStatusBarToggle">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <!-- Translate Panel -->
+            <div class="panel">
+                <label class="panel-title">Translate</label>
+                <button class="btn btn-secondary" id="aiCaptionBtn" style="width: 100%; cursor: not-allowed;" disabled title="Coming soon">
+                    🔒 Translate captions with AI
+                </button>
+                <div class="hint" style="margin-top: 0.5rem; text-align: center;">GENERATE APP STORE-READY CAPTIONS</div>
             </div>
         </div>
     </div>
 
+    <!-- Hidden file inputs -->
     <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    <input type="file" id="bgFileInput" accept="image/*" style="display: none;">
 
-    <script>
-        // Canvas Setup
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        
-        // State Management
-        let state = {
-            image: null,
-            scale: 1,
-            bgColor: '#fdf8f0',
-            textElements: [],
-            currentFrame: 'none',
-            fontWeight: 'normal',
-            fontStyle: 'normal'
-        };
-
-        // Event Listeners
-        document.getElementById('uploadBtn').addEventListener('click', () => {
-            document.getElementById('fileInput').click();
-        });
-
-        document.getElementById('fileInput').addEventListener('change', (e) => {
-            loadImage(e.target.files[0]);
-        });
-
-        const dropZone = document.getElementById('dropZone');
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('active');
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('active');
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('active');
-            if (e.dataTransfer.files.length) {
-                loadImage(e.dataTransfer.files[0]);
-            }
-        });
-
-        dropZone.addEventListener('click', () => {
-            document.getElementById('fileInput').click();
-        });
-
-        document.getElementById('bgColor').addEventListener('change', (e) => {
-            state.bgColor = e.target.value;
-            redraw();
-        });
-
-        document.getElementById('scaleSlider').addEventListener('input', (e) => {
-            state.scale = e.target.value / 100;
-            document.getElementById('scaleValue').textContent = e.target.value;
-            redraw();
-        });
-
-        document.getElementById('fontSize').addEventListener('input', (e) => {
-            document.getElementById('fontSizeValue').textContent = e.target.value;
-        });
-
-        document.getElementById('boldBtn').addEventListener('click', (e) => {
-            e.target.classList.toggle('active');
-            state.fontWeight = e.target.classList.contains('active') ? 'bold' : 'normal';
-        });
-
-        document.getElementById('italicBtn').addEventListener('click', (e) => {
-            e.target.classList.toggle('active');
-            state.fontStyle = e.target.classList.contains('active') ? 'italic' : 'normal';
-        });
-
-        document.getElementById('addTextBtn').addEventListener('click', () => {
-            const text = document.getElementById('textInput').value;
-            if (text.trim()) {
-                state.textElements.push({
-                    text: text,
-                    font: document.getElementById('fontSelect').value,
-                    size: parseInt(document.getElementById('fontSize').value),
-                    color: document.getElementById('textColor').value,
-                    weight: state.fontWeight,
-                    style: state.fontStyle,
-                    x: 50,
-                    y: 50 + (state.textElements.length * 40)
-                });
-                document.getElementById('textInput').value = '';
-                redraw();
-            }
-        });
-
-        document.getElementById('clearTextBtn').addEventListener('click', () => {
-            document.getElementById('textInput').value = '';
-        });
-
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            const link = document.createElement('a');
-            link.href = canvas.toDataURL('image/png');
-            link.download = `nagoh-shot-${Date.now()}.png`;
-            link.click();
-        });
-
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            state = {
-                image: null,
-                scale: 1,
-                bgColor: '#fdf8f0',
-                textElements: [],
-                currentFrame: 'none',
-                fontWeight: 'normal',
-                fontStyle: 'normal'
-            };
-            document.getElementById('fileInput').value = '';
-            document.getElementById('scaleSlider').value = 100;
-            document.getElementById('scaleValue').textContent = '100';
-            document.getElementById('textInput').value = '';
-            document.getElementById('downloadBtn').disabled = true;
-            document.getElementById('bgColor').value = '#fdf8f0';
-            redraw();
-        });
-
-        // Frame Selection
-        document.querySelectorAll('[data-frame]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('[data-frame]').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-                state.currentFrame = e.target.dataset.frame;
-                redraw();
-            });
-        });
-
-        // Image Loading
-        function loadImage(file) {
-            if (!file || !file.type.startsWith('image/')) return;
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    state.image = img;
-                    document.getElementById('downloadBtn').disabled = false;
-                    redraw();
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        // iPhone Frame Drawing
-        function drawPhoneFrame(ctx, x, y, width, height) {
-            const notchHeight = width * 0.08;
-            const cornerRadius = width * 0.08;
-            const frameWidth = width * 0.05;
-            
-            // Outer frame
-            ctx.fillStyle = '#1a1a1a';
-            roundRect(ctx, x - frameWidth, y - frameWidth, width + frameWidth * 2, height + frameWidth * 2, cornerRadius);
-            ctx.fill();
-            
-            // Screen
-            ctx.fillStyle = 'white';
-            roundRect(ctx, x, y, width, height, cornerRadius);
-            ctx.fill();
-            
-            // Notch
-            ctx.fillStyle = '#1a1a1a';
-            roundRect(ctx, x + width * 0.25, y, width * 0.5, notchHeight, notchHeight * 0.5);
-            ctx.fill();
-        }
-
-        function roundRect(ctx, x, y, width, height, radius) {
-            ctx.beginPath();
-            ctx.moveTo(x + radius, y);
-            ctx.lineTo(x + width - radius, y);
-            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-            ctx.lineTo(x + width, y + height - radius);
-            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
-            ctx.lineTo(x + radius, y + height);
-            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-            ctx.lineTo(x, y + radius);
-            ctx.quadraticCurveTo(x, y, x + radius, y);
-            ctx.closePath();
-        }
-
-        // Main Redraw Function
-        function redraw() {
-            canvas.width = 800;
-            canvas.height = 1000;
-
-            // Background
-            ctx.fillStyle = state.bgColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            if (state.image) {
-                const maxWidth = 600;
-                const maxHeight = 800;
-                
-                let imgWidth = state.image.width * state.scale;
-                let imgHeight = state.image.height * state.scale;
-                
-                // Scale down if too large
-                if (imgWidth > maxWidth) {
-                    imgHeight *= maxWidth / imgWidth;
-                    imgWidth = maxWidth;
-                }
-                if (imgHeight > maxHeight) {
-                    imgWidth *= maxHeight / imgHeight;
-                    imgHeight = maxHeight;
-                }
-                
-                const x = (canvas.width - imgWidth) / 2;
-                const y = (canvas.height - imgHeight) / 2;
-                
-                if (state.currentFrame === 'none') {
-                    ctx.drawImage(state.image, x, y, imgWidth, imgHeight);
-                } else {
-                    // Draw phone frame
-                    drawPhoneFrame(ctx, x - 20, y - 20, imgWidth + 40, imgHeight + 40);
-                    ctx.drawImage(state.image, x, y, imgWidth, imgHeight);
-                }
-            }
-
-            // Draw text elements
-            state.textElements.forEach(textEl => {
-                const fontStyle = textEl.style === 'italic' ? 'italic ' : '';
-                const fontWeight = textEl.weight === 'bold' ? 'bold ' : '';
-                ctx.font = `${fontStyle}${fontWeight}${textEl.size}px ${textEl.font}`;
-                ctx.fillStyle = textEl.color;
-                ctx.textBaseline = 'top';
-                
-                // Wrap text if needed
-                const maxWidth = canvas.width - 40;
-                const words = textEl.text.split(' ');
-                let line = '';
-                let y = textEl.y;
-                
-                words.forEach((word, i) => {
-                    const testLine = line + (line ? ' ' : '') + word;
-                    const metrics = ctx.measureText(testLine);
-                    
-                    if (metrics.width > maxWidth && line) {
-                        ctx.fillText(line, textEl.x, y);
-                        line = word;
-                        y += textEl.size + 8;
-                    } else {
-                        line = testLine;
-                    }
-                });
-                if (line) {
-                    ctx.fillText(line, textEl.x, y);
-                }
-            });
-        }
-
-        // Initial render
-        redraw();
-    </script>
+    <!-- Scripts (modular) -->
+    <script src="js/colors.js"></script>
+    <script src="js/devices.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
