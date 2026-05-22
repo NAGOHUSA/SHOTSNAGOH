@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScreenShot Craft - App Store Screenshot Maker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a1a;
+            --secondary: #f5f5f5;
+            --accent: #d4684a;
+            --accent-light: #e8938a;
+            --text: #2a2a2a;
+            --text-light: #666666;
+            --border: #e0e0e0;
+            --success: #4a9d6f;
+        }
+
+        body {
+            font-family: 'Fraunces', serif;
+            background: linear-gradient(135deg, #fafafa 0%, #f5f0eb 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent) 0%, #c45038 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-family: 'Georgia', serif;
+            font-size: 12px;
+            color: var(--text-light);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .canvas-section {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .canvas-wrapper {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+            filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.1));
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Fraunces', serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c45038;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(212, 104, 74, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary);
+            border-color: var(--accent);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .panel {
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .panel-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        input[type="color"],
+        input[type="range"],
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 13px;
+            color: var(--text);
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus,
+        input[type="color"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        input[type="range"] {
+            padding: 0;
+            height: 6px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--border);
+            border: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(212, 104, 74, 0.3);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 4px rgba(212, 104, 74, 0.3);
+        }
+
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .color-option {
+            width: 100%;
+            aspect-ratio: 1;
+            border: 3px solid transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .color-option:hover {
+            transform: scale(1.08);
+        }
+
+        .color-option.active {
+            border-color: var(--text);
+        }
+
+        .device-frame {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .frame-option {
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .frame-option.active {
+            border-color: var(--accent);
+            background: #fff8f5;
+        }
+
+        .frame-option:hover {
+            border-color: var(--accent-light);
+        }
+
+        .text-options {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        button.format-btn {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid var(--border);
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+
+        button.format-btn:hover {
+            border-color: var(--accent);
+            background: #fff8f5;
+        }
+
+        button.format-btn.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 12px;
+            color: var(--text);
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .action-buttons .btn {
+            width: 100%;
+        }
+
+        .drop-zone {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: linear-gradient(135deg, rgba(212, 104, 74, 0.05) 0%, rgba(232, 147, 138, 0.05) 100%);
+        }
+
+        .drop-zone:hover {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(212, 104, 74, 0.1) 0%, rgba(232, 147, 138, 0.1) 100%);
+        }
+
+        .drop-zone.active {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(212, 104, 74, 0.15) 0%, rgba(232, 147, 138, 0.15) 100%);
+        }
+
+        .drop-zone-text {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .info-badge {
+            background: #f0f0f0;
+            border-radius: 4px;
+            padding: 6px 8px;
+            font-size: 11px;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 16px;
+                padding: 16px;
+            }
+
+            .sidebar {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 12px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+
+            .canvas-wrapper {
+                min-height: 400px;
+                padding: 16px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <div class="logo">ScreenShot Craft</div>
+                <div class="tagline">App Store Screenshot Maker</div>
+            </div>
+            <div style="font-size: 12px; color: var(--text-light); text-align: right;">
+                Zero backend • All processing in browser
+            </div>
+        </div>
+
+        <div class="canvas-section">
+            <div class="canvas-wrapper" id="canvasWrapper">
+                <canvas id="canvas"></canvas>
+            </div>
+            <div class="controls">
+                <button class="btn btn-primary" id="uploadBtn">Upload Screenshot</button>
+                <button class="btn btn-secondary" id="downloadBtn" disabled>Download PNG</button>
+                <button class="btn btn-secondary" id="resetBtn">Clear All</button>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <!-- Background Panel -->
+            <div class="panel">
+                <label class="panel-title">Background</label>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="color" id="bgColor" value="#f5efeb">
+                </div>
+            </div>
+
+            <!-- Screenshot Panel -->
+            <div class="panel">
+                <label class="panel-title">Screenshot</label>
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-zone-text">Drop image here<br>or click to select</div>
+                </div>
+                <div class="form-group">
+                    <label>Scale (%)</label>
+                    <input type="range" id="scaleSlider" min="50" max="150" value="100">
+                </div>
+            </div>
+
+            <!-- Device Frame Panel -->
+            <div class="panel">
+                <label class="panel-title">Device Frame</label>
+                <div class="device-frame" id="frameButtons">
+                    <button class="frame-option active" data-frame="none">None</button>
+                    <button class="frame-option" data-frame="iphone-14">iPhone 14 Pro</button>
+                    <button class="frame-option" data-frame="iphone-15">iPhone 15 Pro</button>
+                </div>
+            </div>
+
+            <!-- Text Annotation Panel -->
+            <div class="panel">
+                <label class="panel-title">Add Text</label>
+                <div class="form-group">
+                    <label>Text Content</label>
+                    <textarea id="textInput" placeholder="Add text here..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Font</label>
+                    <select id="fontSelect">
+                        <option value="Georgia, serif">Georgia</option>
+                        <option value="Fraunces, serif">Fraunces</option>
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="monospace">Monospace</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Size</label>
+                    <input type="range" id="fontSize" min="12" max="72" value="24">
+                    <div class="info-badge"><span id="fontSizeValue">24</span>px</div>
+                </div>
+                <div class="form-group">
+                    <label>Color</label>
+                    <input type="color" id="textColor" value="#1a1a1a">
+                </div>
+                <div class="form-group">
+                    <label>Style</label>
+                    <div class="text-options">
+                        <button class="format-btn" id="boldBtn" data-style="bold">B</button>
+                        <button class="format-btn" id="italicBtn" data-style="italic">I</button>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="addTextBtn">Add Text to Canvas</button>
+                    <button class="btn btn-secondary" id="clearTextBtn">Clear Text</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+
+    <script>
+        // Canvas Setup
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // State Management
+        let state = {
+            image: null,
+            scale: 1,
+            bgColor: '#f5efeb',
+            textElements: [],
+            currentFrame: 'none',
+            fontWeight: 'normal',
+            fontStyle: 'normal'
+        };
+
+        // Event Listeners
+        document.getElementById('uploadBtn').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            loadImage(e.target.files[0]);
+        });
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('active');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('active');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('active');
+            if (e.dataTransfer.files.length) {
+                loadImage(e.dataTransfer.files[0]);
+            }
+        });
+
+        dropZone.addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('bgColor').addEventListener('change', (e) => {
+            state.bgColor = e.target.value;
+            redraw();
+        });
+
+        document.getElementById('scaleSlider').addEventListener('input', (e) => {
+            state.scale = e.target.value / 100;
+            redraw();
+        });
+
+        document.getElementById('fontSize').addEventListener('input', (e) => {
+            document.getElementById('fontSizeValue').textContent = e.target.value;
+        });
+
+        document.getElementById('boldBtn').addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            state.fontWeight = e.target.classList.contains('active') ? 'bold' : 'normal';
+        });
+
+        document.getElementById('italicBtn').addEventListener('click', (e) => {
+            e.target.classList.toggle('active');
+            state.fontStyle = e.target.classList.contains('active') ? 'italic' : 'normal';
+        });
+
+        document.getElementById('addTextBtn').addEventListener('click', () => {
+            const text = document.getElementById('textInput').value;
+            if (text.trim()) {
+                state.textElements.push({
+                    text: text,
+                    font: document.getElementById('fontSelect').value,
+                    size: parseInt(document.getElementById('fontSize').value),
+                    color: document.getElementById('textColor').value,
+                    weight: state.fontWeight,
+                    style: state.fontStyle,
+                    x: 50,
+                    y: 50 + (state.textElements.length * 40)
+                });
+                document.getElementById('textInput').value = '';
+                redraw();
+            }
+        });
+
+        document.getElementById('clearTextBtn').addEventListener('click', () => {
+            document.getElementById('textInput').value = '';
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = `screenshot-${Date.now()}.png`;
+            link.click();
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            state = {
+                image: null,
+                scale: 1,
+                bgColor: '#f5efeb',
+                textElements: [],
+                currentFrame: 'none',
+                fontWeight: 'normal',
+                fontStyle: 'normal'
+            };
+            document.getElementById('fileInput').value = '';
+            document.getElementById('scaleSlider').value = 100;
+            document.getElementById('textInput').value = '';
+            document.getElementById('downloadBtn').disabled = true;
+            redraw();
+        });
+
+        // Frame Selection
+        document.querySelectorAll('[data-frame]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('[data-frame]').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                state.currentFrame = e.target.dataset.frame;
+                redraw();
+            });
+        });
+
+        // Image Loading
+        function loadImage(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    state.image = img;
+                    document.getElementById('downloadBtn').disabled = false;
+                    redraw();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // iPhone Frame Drawing
+        function drawPhoneFrame(ctx, x, y, width, height) {
+            const notchHeight = width * 0.08;
+            const cornerRadius = width * 0.08;
+            const frameWidth = width * 0.05;
+            
+            // Outer frame
+            ctx.fillStyle = '#1a1a1a';
+            roundRect(ctx, x - frameWidth, y - frameWidth, width + frameWidth * 2, height + frameWidth * 2, cornerRadius);
+            ctx.fill();
+            
+            // Screen
+            ctx.fillStyle = 'white';
+            roundRect(ctx, x, y, width, height, cornerRadius);
+            ctx.fill();
+            
+            // Notch
+            ctx.fillStyle = '#1a1a1a';
+            roundRect(ctx, x + width * 0.25, y, width * 0.5, notchHeight, notchHeight * 0.5);
+            ctx.fill();
+        }
+
+        function roundRect(ctx, x, y, width, height, radius) {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        }
+
+        // Main Redraw Function
+        function redraw() {
+            canvas.width = 800;
+            canvas.height = 1000;
+
+            // Background
+            ctx.fillStyle = state.bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (state.image) {
+                const maxWidth = 600;
+                const maxHeight = 800;
+                
+                let imgWidth = state.image.width * state.scale;
+                let imgHeight = state.image.height * state.scale;
+                
+                // Scale down if too large
+                if (imgWidth > maxWidth) {
+                    imgHeight *= maxWidth / imgWidth;
+                    imgWidth = maxWidth;
+                }
+                if (imgHeight > maxHeight) {
+                    imgWidth *= maxHeight / imgHeight;
+                    imgHeight = maxHeight;
+                }
+                
+                const x = (canvas.width - imgWidth) / 2;
+                const y = (canvas.height - imgHeight) / 2;
+                
+                if (state.currentFrame === 'none') {
+                    ctx.drawImage(state.image, x, y, imgWidth, imgHeight);
+                } else {
+                    // Draw phone frame
+                    drawPhoneFrame(ctx, x - 20, y - 20, imgWidth + 40, imgHeight + 40);
+                    ctx.drawImage(state.image, x, y, imgWidth, imgHeight);
+                }
+            }
+
+            // Draw text elements
+            state.textElements.forEach(textEl => {
+                const fontStyle = textEl.style === 'italic' ? 'italic ' : '';
+                const fontWeight = textEl.weight === 'bold' ? 'bold ' : '';
+                ctx.font = `${fontStyle}${fontWeight}${textEl.size}px ${textEl.font}`;
+                ctx.fillStyle = textEl.color;
+                ctx.textBaseline = 'top';
+                
+                // Wrap text if needed
+                const maxWidth = canvas.width - 40;
+                const words = textEl.text.split(' ');
+                let line = '';
+                let y = textEl.y;
+                
+                words.forEach((word, i) => {
+                    const testLine = line + (line ? ' ' : '') + word;
+                    const metrics = ctx.measureText(testLine);
+                    
+                    if (metrics.width > maxWidth && line) {
+                        ctx.fillText(line, textEl.x, y);
+                        line = word;
+                        y += textEl.size + 8;
+                    } else {
+                        line = testLine;
+                    }
+                });
+                if (line) {
+                    ctx.fillText(line, textEl.x, y);
+                }
+            });
+        }
+
+        // Initial render
+        redraw();
+    </script>
+</body>
+</html>
