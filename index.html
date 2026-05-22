@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NAGOH Shots - Universal Screenshot & Image Maker</title>
+    <title>NAGOH Shots - Professional Universal Image Maker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300;1,500&family=DM+Sans:wght@300;400;500;600&family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;600&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -20,6 +20,7 @@
             --deep:     #2a1f16;
             --rose:     #e8524a;
             --rose-lt:  #fce8e7;
+            --rose-md:  #f5c4c2;
             --teal:     #2a9d8f;
             --teal-lt:  #e0f5f3;
             --gold:     #e9a028;
@@ -63,7 +64,7 @@
         .main {
             flex: 1;
             display: grid;
-            grid-template-columns: 1fr 440px;
+            grid-template-columns: 1fr 460px;
             gap: 1.5rem;
             padding: 1.5rem;
             overflow: hidden;
@@ -89,12 +90,19 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             min-height: 0;
             position: relative;
-            cursor: crosshair;
         }
         
         #canvasContainer {
             position: relative;
             display: inline-block;
+        }
+        
+        #guidanceOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+            pointer-events: none;
         }
         
         canvas {
@@ -166,6 +174,9 @@
             font-weight: 600;
             color: var(--ink);
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
         
         .form-group { margin-bottom: 1rem; }
@@ -205,75 +216,57 @@
             margin-top: 0.5rem;
         }
         
-        .option-grid {
+        .grid-2 {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0.6rem;
             margin-top: 0.5rem;
         }
         
-        .option-btn {
-            padding: 10px 8px;
-            border: 2px solid var(--border);
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-        
-        .option-btn:hover { border-color: var(--rose); background: var(--rose-lt); }
-        .option-btn.active { border-color: var(--teal); background: var(--teal-lt); color: var(--teal); }
-        
-        .font-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.6rem;
-            margin-top: 0.5rem;
-        }
-        
-        .font-option {
-            padding: 8px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: white;
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: 500;
-            transition: all 0.15s;
-        }
-        
-        .font-option:hover { border-color: var(--gold); background: var(--gold-lt); }
-        .font-option.active { border-color: var(--gold); background: var(--gold); color: white; }
-        
-        .position-grid, .text-controls {
+        .grid-3 {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 0.6rem;
             margin-top: 0.5rem;
         }
         
-        .text-controls {
+        .grid-4 {
+            display: grid;
             grid-template-columns: repeat(4, 1fr);
+            gap: 0.6rem;
+            margin-top: 0.5rem;
         }
         
-        .btn-small {
+        .option-btn, .font-option, .btn-small, .guide-btn {
             padding: 8px;
             border: 1px solid var(--border);
             border-radius: 6px;
             background: white;
             cursor: pointer;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 500;
             text-align: center;
             transition: all 0.15s;
-            font-weight: 500;
         }
         
-        .btn-small:hover { border-color: var(--rose); background: var(--rose-lt); }
-        .btn-small.active { border-color: var(--teal); background: var(--teal-lt); color: var(--teal); }
+        .option-btn, .guide-btn { border: 2px solid var(--border); padding: 10px 8px; }
+        
+        .option-btn:hover, .font-option:hover, .btn-small:hover, .guide-btn:hover { 
+            border-color: var(--rose); 
+            background: var(--rose-lt); 
+        }
+        
+        .option-btn.active, .font-option.active, .btn-small.active, .guide-btn.active { 
+            border-color: var(--teal); 
+            background: var(--teal-lt); 
+            color: var(--teal); 
+        }
+        
+        .guide-btn.active { 
+            border-color: var(--gold); 
+            background: var(--gold); 
+            color: white; 
+        }
         
         .emoji-grid {
             display: grid;
@@ -289,7 +282,10 @@
             background: white;
             cursor: pointer;
             font-size: 1.2rem;
+            transition: all 0.15s;
         }
+        
+        .emoji-btn:hover { background: var(--rose-lt); border-color: var(--rose); }
         
         .drop-zone {
             border: 2px dashed var(--border);
@@ -319,18 +315,10 @@
             border-radius: 12px;
             font-size: 0.65rem;
             font-weight: 600;
-            margin-left: 0.5rem;
         }
         
         input[type="range"] {
             width: 100%;
-            margin-top: 0.5rem;
-        }
-        
-        .two-col-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.6rem;
             margin-top: 0.5rem;
         }
         
@@ -349,10 +337,10 @@
 <body>
     <div class="topbar">
         <div class="wordmark">NAGOH <em>Shots</em></div>
-        <div class="tagline">Universal Image Maker</div>
+        <div class="tagline">Professional Universal Image Maker</div>
         <div class="tsep"></div>
         <div class="tpill">✓ <span id="imageTypeLabel">App Store</span></div>
-        <button class="tbtn" id="downloadBtn" disabled>Download</button>
+        <button class="tbtn" id="downloadBtn" disabled>Download PNG</button>
     </div>
 
     <div class="main">
@@ -360,6 +348,7 @@
             <div class="canvas-wrapper">
                 <div id="canvasContainer">
                     <canvas id="canvas"></canvas>
+                    <canvas id="guidanceOverlay"></canvas>
                     <div id="textOverlays"></div>
                 </div>
             </div>
@@ -373,42 +362,50 @@
             <!-- Image Type -->
             <div class="panel">
                 <label class="panel-title">Image Type</label>
-                <div class="option-grid">
-                    <button class="option-btn active" data-type="appstore" data-label="App Store">📱 App</button>
-                    <button class="option-btn" data-type="social" data-label="Social Media">📸 Social</button>
-                    <button class="option-btn" data-type="product" data-label="Product">🛍️ Product</button>
-                    <button class="option-btn" data-type="promo" data-label="Promotional">🎯 Promo</button>
+                <div class="grid-2">
+                    <button class="option-btn active" data-type="appstore">📱 App</button>
+                    <button class="option-btn" data-type="social">📸 Social</button>
+                    <button class="option-btn" data-type="product">🛍️ Product</button>
+                    <button class="option-btn" data-type="promo">🎯 Promo</button>
                 </div>
-                <p class="info-text">Choose your image purpose</p>
             </div>
 
-            <!-- Language -->
+            <!-- Language & Guides -->
             <div class="panel">
-                <label class="panel-title">Language 🌐</label>
-                <select id="languageSelect">
-                    <option value="en">English</option>
-                    <option value="es">Español</option>
-                    <option value="fr">Français</option>
-                    <option value="de">Deutsch</option>
-                    <option value="ja">日本語</option>
-                    <option value="zh">中文</option>
-                    <option value="pt">Português</option>
-                    <option value="ko">한국어</option>
-                </select>
-                <p class="info-text">UI changes to selected language</p>
+                <label class="panel-title">Settings</label>
+                <div class="form-group">
+                    <label>Language 🌐</label>
+                    <select id="languageSelect">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                        <option value="ja">日本語</option>
+                        <option value="zh">中文</option>
+                        <option value="pt">Português</option>
+                        <option value="ko">한국어</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Alignment Guides</label>
+                    <div class="grid-3">
+                        <button class="guide-btn active" id="guideGridBtn">Grid</button>
+                        <button class="guide-btn" id="guideSafeBtn">Safe</button>
+                        <button class="guide-btn" id="guideNoneBtn">None</button>
+                    </div>
+                </div>
             </div>
 
-            <!-- Devices/Sizes -->
+            <!-- Device/Size -->
             <div class="panel">
-                <label class="panel-title" id="sizeLabel">Device</label>
+                <label class="panel-title">Device</label>
                 <select id="sizeSelect"></select>
             </div>
 
-            <!-- Audience (Dynamic based on image type) -->
+            <!-- Audience -->
             <div class="panel">
                 <label class="panel-title">Audience <span class="badge" id="audienceLabel">Tech</span></label>
-                <div class="option-grid" id="audienceGrid"></div>
-                <p class="info-text" id="audienceHint">Suggest colors & fonts for target audience</p>
+                <div class="grid-2" id="audienceGrid"></div>
             </div>
 
             <!-- Colors -->
@@ -416,20 +413,34 @@
                 <label class="panel-title">Colors</label>
                 <div class="color-row">
                     <div class="form-group">
-                        <label id="bgLabel">Background</label>
+                        <label>Background</label>
                         <input type="color" id="bgColor" value="#fdf8f0">
                     </div>
                     <div class="form-group">
-                        <label id="textColorLabel">Text</label>
+                        <label>Text</label>
                         <input type="color" id="textColor" value="#3d2f24">
                     </div>
                 </div>
             </div>
 
+            <!-- Templates -->
+            <div class="panel">
+                <label class="panel-title">Templates</label>
+                <div class="grid-2">
+                    <button class="option-btn active" data-template="minimal">Minimal</button>
+                    <button class="option-btn" data-template="vibrant">Vibrant</button>
+                    <button class="option-btn" data-template="elegant">Elegant</button>
+                    <button class="option-btn" data-template="modern">Modern</button>
+                    <button class="option-btn" data-template="warm">Warm</button>
+                    <button class="option-btn" data-template="cool">Cool</button>
+                </div>
+                <p class="info-text">Preset styles</p>
+            </div>
+
             <!-- Fonts -->
             <div class="panel">
-                <label class="panel-title" id="fontLabel">Font</label>
-                <div class="font-grid">
+                <label class="panel-title">Font</label>
+                <div class="grid-2">
                     <button class="font-option active" data-font="Fraunces, serif" style="font-family: Fraunces, serif;">Fraunces</button>
                     <button class="font-option" data-font="Playfair Display, serif" style="font-family: Playfair Display, serif;">Playfair</button>
                     <button class="font-option" data-font="DM Sans, sans-serif" style="font-family: DM Sans, sans-serif;">DM Sans</button>
@@ -441,33 +452,39 @@
 
             <!-- Image -->
             <div class="panel">
-                <label class="panel-title" id="imageLabel">Image</label>
-                <div class="drop-zone" id="dropZone">Drop image here</div>
+                <label class="panel-title">Image</label>
+                <div class="drop-zone" id="dropZone">Drop image or click</div>
             </div>
 
             <!-- Caption -->
             <div class="panel">
-                <label class="panel-title" id="captionLabel">Caption</label>
+                <label class="panel-title">Caption</label>
                 <textarea id="captionInput" placeholder="Add text..."></textarea>
-                <div class="text-controls">
+                <div class="grid-4">
                     <button class="btn-small" id="boldBtn">B</button>
                     <button class="btn-small" id="italicBtn">I</button>
                     <button class="btn-small" id="underlineBtn">U</button>
                     <button class="btn-small" id="strikeBtn">S</button>
                 </div>
-                <label style="margin-top: 1rem;" id="sizeSubLabel">Size</label>
+                <label style="margin-top: 1rem;">Size</label>
                 <input type="range" id="fontSize" min="12" max="80" value="32">
             </div>
 
             <!-- Position -->
             <div class="panel">
-                <label class="panel-title" id="positionLabel">Position</label>
-                <div class="position-grid">
+                <label class="panel-title">Position</label>
+                <div class="grid-3">
                     <button class="btn-small active" data-position="top">Top</button>
                     <button class="btn-small" data-position="middle">Middle</button>
                     <button class="btn-small" data-position="bottom">Bottom</button>
                 </div>
-                <p class="info-text">💡 Or drag text on canvas</p>
+                <p class="info-text">Or drag text on canvas</p>
+            </div>
+
+            <!-- Emojis -->
+            <div class="panel">
+                <label class="panel-title">Emojis</label>
+                <div class="emoji-grid" id="emojiGrid"></div>
             </div>
         </div>
     </div>
@@ -475,115 +492,28 @@
     <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
     <script>
-        // Multi-language support
+        // All Features Combined in One File
+
         const LANGUAGES = {
-            en: {
-                sizeLabel: 'Device',
-                fontLabel: 'Font',
-                imageLabel: 'Image',
-                captionLabel: 'Caption',
-                positionLabel: 'Position',
-                bgLabel: 'Background',
-                textColorLabel: 'Text',
-                sizeSubLabel: 'Size',
-                dragHint: '💡 Or drag text on canvas',
-                dropHint: 'Drop image here',
-                audienceHint: 'Suggest colors & fonts for target audience'
-            },
-            es: {
-                sizeLabel: 'Dispositivo',
-                fontLabel: 'Fuente',
-                imageLabel: 'Imagen',
-                captionLabel: 'Título',
-                positionLabel: 'Posición',
-                bgLabel: 'Fondo',
-                textColorLabel: 'Texto',
-                sizeSubLabel: 'Tamaño',
-                dragHint: '💡 O arrastra el texto en el lienzo',
-                dropHint: 'Suelta la imagen aquí',
-                audienceHint: 'Sugerir colores y fuentes para el público objetivo'
-            },
-            fr: {
-                sizeLabel: 'Appareil',
-                fontLabel: 'Police',
-                imageLabel: 'Image',
-                captionLabel: 'Légende',
-                positionLabel: 'Position',
-                bgLabel: 'Arrière-plan',
-                textColorLabel: 'Texte',
-                sizeSubLabel: 'Taille',
-                dragHint: '💡 Ou faites glisser le texte sur le canevas',
-                dropHint: 'Déposez l\'image ici',
-                audienceHint: 'Suggérer les couleurs et les polices pour le public cible'
-            },
-            de: {
-                sizeLabel: 'Gerät',
-                fontLabel: 'Schrift',
-                imageLabel: 'Bild',
-                captionLabel: 'Beschriftung',
-                positionLabel: 'Position',
-                bgLabel: 'Hintergrund',
-                textColorLabel: 'Text',
-                sizeSubLabel: 'Größe',
-                dragHint: '💡 Oder ziehen Sie Text auf die Leinwand',
-                dropHint: 'Bild hier ablegen',
-                audienceHint: 'Farben und Schriften für Zielgruppe vorschlagen'
-            },
-            ja: {
-                sizeLabel: 'デバイス',
-                fontLabel: 'フォント',
-                imageLabel: '画像',
-                captionLabel: 'キャプション',
-                positionLabel: '位置',
-                bgLabel: '背景',
-                textColorLabel: 'テキスト',
-                sizeSubLabel: 'サイズ',
-                dragHint: '💡 またはキャンバスでテキストをドラッグ',
-                dropHint: '画像をここにドロップ',
-                audienceHint: 'ターゲットオーディエンスの色とフォントを提案'
-            },
-            zh: {
-                sizeLabel: '设备',
-                fontLabel: '字体',
-                imageLabel: '图像',
-                captionLabel: '标题',
-                positionLabel: '位置',
-                bgLabel: '背景',
-                textColorLabel: '文本',
-                sizeSubLabel: '大小',
-                dragHint: '💡 或在画布上拖动文本',
-                dropHint: '将图像放在此处',
-                audienceHint: '为目标受众建议颜色和字体'
-            },
-            pt: {
-                sizeLabel: 'Dispositivo',
-                fontLabel: 'Fonte',
-                imageLabel: 'Imagem',
-                captionLabel: 'Legenda',
-                positionLabel: 'Posição',
-                bgLabel: 'Fundo',
-                textColorLabel: 'Texto',
-                sizeSubLabel: 'Tamanho',
-                dragHint: '💡 Ou arraste o texto na tela',
-                dropHint: 'Solte a imagem aqui',
-                audienceHint: 'Sugerir cores e fontes para o público-alvo'
-            },
-            ko: {
-                sizeLabel: '기기',
-                fontLabel: '글꼴',
-                imageLabel: '이미지',
-                captionLabel: '캡션',
-                positionLabel: '위치',
-                bgLabel: '배경',
-                textColorLabel: '텍스트',
-                sizeSubLabel: '크기',
-                dragHint: '💡 또는 캔버스에서 텍스트를 드래그하세요',
-                dropHint: '여기에 이미지를 놓으세요',
-                audienceHint: '대상 청중을 위한 색상 및 글꼴 제안'
-            }
+            en: { device: 'Device', font: 'Font', image: 'Image', caption: 'Caption', position: 'Position', bg: 'Background', text: 'Text', size: 'Size' },
+            es: { device: 'Dispositivo', font: 'Fuente', image: 'Imagen', caption: 'Título', position: 'Posición', bg: 'Fondo', text: 'Texto', size: 'Tamaño' },
+            fr: { device: 'Appareil', font: 'Police', image: 'Image', caption: 'Légende', position: 'Position', bg: 'Arrière-plan', text: 'Texte', size: 'Taille' },
+            de: { device: 'Gerät', font: 'Schrift', image: 'Bild', caption: 'Beschriftung', position: 'Position', bg: 'Hintergrund', text: 'Text', size: 'Größe' },
+            ja: { device: 'デバイス', font: 'フォント', image: '画像', caption: 'キャプション', position: '位置', bg: '背景', text: 'テキスト', size: 'サイズ' },
+            zh: { device: '设备', font: '字体', image: '图像', caption: '标题', position: '位置', bg: '背景', text: '文本', size: '大小' },
+            pt: { device: 'Dispositivo', font: 'Fonte', image: 'Imagem', caption: 'Legenda', position: 'Posição', bg: 'Fundo', text: 'Texto', size: 'Tamanho' },
+            ko: { device: '기기', font: '글꼴', image: '이미지', caption: '캡션', position: '위치', bg: '배경', text: '텍스트', size: '크기' }
         };
 
-        // Image types with device specs and audiences
+        const TEMPLATES = {
+            minimal: { bgColor: '#ffffff', textColor: '#000000', fontFamily: 'Inter, sans-serif', fontSize: 28 },
+            vibrant: { bgColor: '#2a9d8f', textColor: '#ffffff', fontFamily: 'Poppins, sans-serif', fontSize: 36 },
+            elegant: { bgColor: '#f5ede0', textColor: '#2a1f16', fontFamily: 'Playfair Display, serif', fontSize: 40 },
+            modern: { bgColor: '#3d2f24', textColor: '#e9a028', fontFamily: 'DM Sans, sans-serif', fontSize: 32 },
+            warm: { bgColor: '#fdf8f0', textColor: '#e8524a', fontFamily: 'Fraunces, serif', fontSize: 34 },
+            cool: { bgColor: '#e0f5f3', textColor: '#0066cc', fontFamily: 'Inter, sans-serif', fontSize: 30 }
+        };
+
         const IMAGE_TYPES = {
             appstore: {
                 label: 'App Store',
@@ -594,10 +524,10 @@
                     'ipad-pro-13': { name: 'iPad Pro 13"', width: 2064, height: 2752 }
                 },
                 audiences: {
-                    tech: { name: 'Tech Users', colors: ['#0066cc', '#ffffff'] },
-                    business: { name: 'Business', colors: ['#1a1a1a', '#ffffff'] },
-                    creative: { name: 'Creative', colors: ['#ff6b6b', '#ffffff'] },
-                    casual: { name: 'Casual Users', colors: ['#ff69b4', '#ffffff'] }
+                    tech: { name: 'Tech Users' },
+                    business: { name: 'Business' },
+                    creative: { name: 'Creative' },
+                    casual: { name: 'Casual' }
                 }
             },
             social: {
@@ -611,10 +541,10 @@
                     'fb': { name: 'Facebook', width: 1200, height: 628 }
                 },
                 audiences: {
-                    influencer: { name: 'Influencers', colors: ['#ff1493', '#ffffff'] },
-                    brands: { name: 'Brands', colors: ['#2a9d8f', '#ffffff'] },
-                    creators: { name: 'Content Creators', colors: ['#ffb400', '#000000'] },
-                    lifestyle: { name: 'Lifestyle', colors: ['#ff6b9d', '#ffffff'] }
+                    influencer: { name: 'Influencers' },
+                    brands: { name: 'Brands' },
+                    creators: { name: 'Creators' },
+                    lifestyle: { name: 'Lifestyle' }
                 }
             },
             product: {
@@ -626,10 +556,10 @@
                     'banner': { name: 'Product Banner', width: 1920, height: 1080 }
                 },
                 audiences: {
-                    premium: { name: 'Premium/Luxury', colors: ['#d4af37', '#000000'] },
-                    eco: { name: 'Eco-conscious', colors: ['#2d5016', '#ffffff'] },
-                    minimal: { name: 'Minimalist', colors: ['#ffffff', '#000000'] },
-                    bold: { name: 'Bold/Modern', colors: ['#ff0000', '#ffffff'] }
+                    premium: { name: 'Premium/Luxury' },
+                    eco: { name: 'Eco-conscious' },
+                    minimal: { name: 'Minimalist' },
+                    bold: { name: 'Bold' }
                 }
             },
             promo: {
@@ -637,14 +567,14 @@
                 devices: {
                     'promo-square': { name: 'Square Ad', width: 1080, height: 1080 },
                     'promo-wide': { name: 'Wide Banner', width: 1920, height: 400 },
-                    'promo-vertical': { name: 'Vertical Banner', width: 400, height: 900 },
+                    'promo-vertical': { name: 'Vertical', width: 400, height: 900 },
                     'email': { name: 'Email Header', width: 600, height: 300 }
                 },
                 audiences: {
-                    sale: { name: 'Sales/Offers', colors: ['#ff6b35', '#ffffff'] },
-                    launch: { name: 'Product Launch', colors: ['#667eea', '#ffffff'] },
-                    seasonal: { name: 'Seasonal', colors: ['#ff1493', '#00ff00'] },
-                    event: { name: 'Event/Announcement', colors: ['#ffd700', '#000000'] }
+                    sale: { name: 'Sales/Offers' },
+                    launch: { name: 'Launch' },
+                    seasonal: { name: 'Seasonal' },
+                    event: { name: 'Event' }
                 }
             }
         };
@@ -652,9 +582,9 @@
         const EMOJIS = ['👍', '👏', '🎉', '✨', '🚀', '💡', '🔥', '⭐', '💎', '🎯', '📱', '💻', '⚙️', '🛠️', '✅', '❌', '❤️', '😀', '👀', '🌟', '💪', '📈', '🎨', '🔐', '🌍', '📚', '🏆'];
 
         const canvas = document.getElementById('canvas');
+        const guidanceCanvas = document.getElementById('guidanceOverlay');
         const ctx = canvas.getContext('2d');
-        let currentLanguage = 'en';
-        let currentImageType = 'appstore';
+        const guideCtx = guidanceCanvas.getContext('2d');
 
         let state = {
             image: null,
@@ -670,7 +600,9 @@
             fontWeight: 'normal',
             fontStyle: 'normal',
             imageType: 'appstore',
-            audience: 'tech'
+            audience: 'tech',
+            guideType: 'grid',
+            language: 'en'
         };
 
         let draggingText = false;
@@ -679,67 +611,28 @@
 
         function init() {
             setupEventListeners();
-            updateLanguage('en');
+            initEmojis();
             selectImageType('appstore');
         }
 
-        function updateLanguage(lang) {
-            currentLanguage = lang;
-            const labels = LANGUAGES[lang];
-            
-            document.getElementById('sizeLabel').textContent = labels.sizeLabel;
-            document.getElementById('fontLabel').textContent = labels.fontLabel;
-            document.getElementById('imageLabel').textContent = labels.imageLabel;
-            document.getElementById('captionLabel').textContent = labels.captionLabel;
-            document.getElementById('positionLabel').textContent = labels.positionLabel;
-            document.getElementById('bgLabel').textContent = labels.bgLabel;
-            document.getElementById('textColorLabel').textContent = labels.textColorLabel;
-            document.getElementById('sizeSubLabel').textContent = labels.sizeSubLabel;
-            document.getElementById('dropZone').textContent = labels.dropHint;
-            document.querySelector('[data-position="top"]').parentElement.nextElementSibling.textContent = labels.dragHint;
-            document.getElementById('audienceHint').textContent = labels.audienceHint;
-        }
-
-        function selectImageType(type) {
-            currentImageType = type;
-            state.imageType = type;
-            
-            const typeData = IMAGE_TYPES[type];
-            document.getElementById('imageTypeLabel').textContent = typeData.label;
-            
-            // Update device select
-            const deviceSelect = document.getElementById('sizeSelect');
-            deviceSelect.innerHTML = '';
-            Object.entries(typeData.devices).forEach(([key, spec]) => {
-                const option = document.createElement('option');
-                option.value = key;
-                option.textContent = `${spec.name} (${spec.width}×${spec.height})`;
-                deviceSelect.appendChild(option);
-            });
-            
-            // Update audience select
-            const audienceGrid = document.getElementById('audienceGrid');
-            audienceGrid.innerHTML = '';
-            Object.entries(typeData.audiences).forEach(([key, audience]) => {
+        function initEmojis() {
+            const grid = document.getElementById('emojiGrid');
+            EMOJIS.forEach(emoji => {
                 const btn = document.createElement('button');
-                btn.className = 'option-btn' + (key === 'tech' ? ' active' : '');
-                btn.dataset.audience = key;
-                btn.textContent = audience.name;
-                btn.onclick = (e) => {
-                    document.querySelectorAll('[data-audience]').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    state.audience = key;
-                    document.getElementById('audienceLabel').textContent = audience.name;
+                btn.className = 'emoji-btn';
+                btn.textContent = emoji;
+                btn.onclick = () => {
+                    const textarea = document.getElementById('captionInput');
+                    textarea.value += emoji;
+                    state.caption += emoji;
                     redraw();
                 };
-                audienceGrid.appendChild(btn);
+                grid.appendChild(btn);
             });
-            
-            selectDevice(Object.keys(typeData.devices)[0]);
         }
 
         function setupEventListeners() {
-            // Image type
+            // Image types
             document.querySelectorAll('[data-type]').forEach(btn => {
                 btn.onclick = (e) => {
                     document.querySelectorAll('[data-type]').forEach(b => b.classList.remove('active'));
@@ -748,14 +641,59 @@
                 };
             });
 
+            // Templates
+            document.querySelectorAll('[data-template]').forEach(btn => {
+                btn.onclick = (e) => {
+                    document.querySelectorAll('[data-template]').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    const template = TEMPLATES[e.target.dataset.template];
+                    Object.assign(state, template);
+                    document.getElementById('bgColor').value = template.bgColor;
+                    document.getElementById('textColor').value = template.textColor;
+                    document.getElementById('fontSize').value = template.fontSize;
+                    applyFont(template.fontFamily);
+                    redraw();
+                };
+            });
+
+            // Fonts
+            document.querySelectorAll('[data-font]').forEach(btn => {
+                btn.onclick = (e) => {
+                    applyFont(e.target.dataset.font);
+                };
+            });
+
             // Language
             document.getElementById('languageSelect').onchange = (e) => {
-                updateLanguage(e.target.value);
+                state.language = e.target.value;
             };
 
-            // Size select
+            // Guides
+            document.getElementById('guideGridBtn').onclick = (e) => {
+                document.querySelectorAll('.guide-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                state.guideType = 'grid';
+                redraw();
+            };
+
+            document.getElementById('guideSafeBtn').onclick = (e) => {
+                document.querySelectorAll('.guide-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                state.guideType = 'safe';
+                redraw();
+            };
+
+            document.getElementById('guideNoneBtn').onclick = (e) => {
+                document.querySelectorAll('.guide-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                state.guideType = 'none';
+                redraw();
+            };
+
+            // Device/Size
             document.getElementById('sizeSelect').onchange = (e) => {
-                selectDevice(e.target.value);
+                state.currentDevice = e.target.value;
+                redraw();
             };
 
             // Colors
@@ -769,7 +707,7 @@
                 redraw();
             };
 
-            // Image
+            // Image upload
             document.getElementById('uploadBtn').onclick = () => document.getElementById('fileInput').click();
             document.getElementById('fileInput').onchange = (e) => {
                 const reader = new FileReader();
@@ -834,16 +772,6 @@
                 redraw();
             };
 
-            // Fonts
-            document.querySelectorAll('[data-font]').forEach(btn => {
-                btn.onclick = (e) => {
-                    document.querySelectorAll('[data-font]').forEach(b => b.classList.remove('active'));
-                    e.target.classList.add('active');
-                    state.fontFamily = e.target.dataset.font;
-                    redraw();
-                };
-            });
-
             // Position
             document.querySelectorAll('[data-position]').forEach(btn => {
                 btn.onclick = (e) => {
@@ -878,7 +806,9 @@
                     fontWeight: 'normal',
                     fontStyle: 'normal',
                     imageType: 'appstore',
-                    audience: 'tech'
+                    audience: 'tech',
+                    guideType: 'grid',
+                    language: 'en'
                 };
                 document.getElementById('fileInput').value = '';
                 document.getElementById('captionInput').value = '';
@@ -902,10 +832,46 @@
             };
         }
 
-        function selectDevice(deviceKey) {
-            const typeData = IMAGE_TYPES[state.imageType];
-            const spec = typeData.devices[deviceKey];
-            state.currentDevice = deviceKey;
+        function applyFont(fontFamily) {
+            document.querySelectorAll('[data-font]').forEach(b => b.classList.remove('active'));
+            document.querySelector(`[data-font="${fontFamily}"]`).classList.add('active');
+            state.fontFamily = fontFamily;
+            redraw();
+        }
+
+        function selectImageType(type) {
+            state.imageType = type;
+            const typeData = IMAGE_TYPES[type];
+            document.getElementById('imageTypeLabel').textContent = typeData.label;
+            
+            // Update devices
+            const sizeSelect = document.getElementById('sizeSelect');
+            sizeSelect.innerHTML = '';
+            Object.entries(typeData.devices).forEach(([key, spec]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `${spec.name} (${spec.width}×${spec.height})`;
+                sizeSelect.appendChild(option);
+            });
+            
+            // Update audiences
+            const audienceGrid = document.getElementById('audienceGrid');
+            audienceGrid.innerHTML = '';
+            Object.entries(typeData.audiences).forEach(([key, audience]) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn' + (key === Object.keys(typeData.audiences)[0] ? ' active' : '');
+                btn.dataset.audience = key;
+                btn.textContent = audience.name;
+                btn.onclick = (e) => {
+                    document.querySelectorAll('[data-audience]').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    state.audience = key;
+                    document.getElementById('audienceLabel').textContent = audience.name;
+                };
+                audienceGrid.appendChild(btn);
+            });
+            
+            state.currentDevice = Object.keys(typeData.devices)[0];
             redraw();
         }
 
@@ -946,6 +912,69 @@
             if (label) label.classList.remove('active');
         }
 
+        function drawGuidanceGrid() {
+            const width = guidanceCanvas.width;
+            const height = guidanceCanvas.height;
+            
+            guideCtx.clearRect(0, 0, width, height);
+            guideCtx.strokeStyle = 'rgba(232, 82, 74, 0.15)';
+            guideCtx.lineWidth = 1;
+            
+            for (let i = 1; i < 3; i++) {
+                const x = (width / 3) * i;
+                guideCtx.beginPath();
+                guideCtx.moveTo(x, 0);
+                guideCtx.lineTo(x, height);
+                guideCtx.stroke();
+                
+                const y = (height / 3) * i;
+                guideCtx.beginPath();
+                guideCtx.moveTo(0, y);
+                guideCtx.lineTo(width, y);
+                guideCtx.stroke();
+            }
+            
+            guideCtx.strokeStyle = 'rgba(232, 82, 74, 0.25)';
+            guideCtx.lineWidth = 1.5;
+            guideCtx.setLineDash([5, 5]);
+            
+            guideCtx.beginPath();
+            guideCtx.moveTo(width / 2, 0);
+            guideCtx.lineTo(width / 2, height);
+            guideCtx.stroke();
+            
+            guideCtx.beginPath();
+            guideCtx.moveTo(0, height / 2);
+            guideCtx.lineTo(width, height / 2);
+            guideCtx.stroke();
+            
+            guideCtx.setLineDash([]);
+        }
+
+        function drawSafeZone() {
+            const width = guidanceCanvas.width;
+            const height = guidanceCanvas.height;
+            const margin = Math.min(width, height) * 0.15;
+            
+            guideCtx.clearRect(0, 0, width, height);
+            guideCtx.strokeStyle = 'rgba(42, 157, 143, 0.3)';
+            guideCtx.lineWidth = 2;
+            guideCtx.setLineDash([8, 4]);
+            guideCtx.strokeRect(margin, margin, width - margin * 2, height - margin * 2);
+            
+            guideCtx.fillStyle = 'rgba(232, 82, 74, 0.05)';
+            guideCtx.fillRect(0, 0, width, margin);
+            guideCtx.fillRect(0, height - margin, width, margin);
+            guideCtx.fillRect(0, margin, margin, height - margin * 2);
+            guideCtx.fillRect(width - margin, margin, margin, height - margin * 2);
+            
+            guideCtx.setLineDash([]);
+            guideCtx.fillStyle = 'rgba(232, 82, 74, 0.4)';
+            guideCtx.font = '12px Arial';
+            guideCtx.textAlign = 'center';
+            guideCtx.fillText('Safe Zone', width / 2, margin + 20);
+        }
+
         function redraw() {
             const typeData = IMAGE_TYPES[state.imageType];
             const deviceKey = document.getElementById('sizeSelect').value;
@@ -953,6 +982,8 @@
             
             canvas.width = spec.width;
             canvas.height = spec.height;
+            guidanceCanvas.width = spec.width;
+            guidanceCanvas.height = spec.height;
 
             // Background
             ctx.fillStyle = state.bgColor;
@@ -1025,12 +1056,19 @@
 
                 updateTextOverlay(textX, textY);
             }
+
+            // Guidance
+            if (state.guideType === 'grid') {
+                drawGuidanceGrid();
+            } else if (state.guideType === 'safe') {
+                drawSafeZone();
+            } else {
+                guideCtx.clearRect(0, 0, guidanceCanvas.width, guidanceCanvas.height);
+            }
         }
 
         function updateTextOverlay(x, y) {
-            const container = document.getElementById('canvasContainer');
             const overlays = document.getElementById('textOverlays');
-            
             const scaleX = canvas.offsetWidth / canvas.width;
             const scaleY = canvas.offsetHeight / canvas.height;
             
