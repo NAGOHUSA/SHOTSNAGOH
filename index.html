@@ -608,13 +608,41 @@
                 ctx.font = `${fontStyle}${fontWeight}${state.fontSize}px Georgia`;
                 ctx.fillStyle = state.textColor;
                 ctx.textAlign = 'center';
+                ctx.textBaseline = 'top';
 
                 let y;
-                if (state.textPosition === 'top') y = state.padding;
-                else if (state.textPosition === 'middle') y = canvas.height / 2;
-                else y = canvas.height - state.padding - state.fontSize;
+                if (state.textPosition === 'top') {
+                    y = state.padding + state.fontSize + 20; // More padding for top text
+                } else if (state.textPosition === 'middle') {
+                    ctx.textBaseline = 'middle';
+                    y = canvas.height / 2;
+                } else {
+                    ctx.textBaseline = 'bottom';
+                    y = canvas.height - state.padding - 20;
+                }
 
-                ctx.fillText(state.caption, canvas.width / 2, y);
+                // Wrap text if needed
+                const maxWidth = canvas.width - (state.padding * 2);
+                const words = state.caption.split(' ');
+                let line = '';
+                let currentY = y;
+                const lineHeight = state.fontSize + 10;
+
+                words.forEach((word) => {
+                    const testLine = line + (line ? ' ' : '') + word;
+                    const metrics = ctx.measureText(testLine);
+                    
+                    if (metrics.width > maxWidth && line) {
+                        ctx.fillText(line, canvas.width / 2, currentY);
+                        line = word;
+                        currentY += lineHeight;
+                    } else {
+                        line = testLine;
+                    }
+                });
+                if (line) {
+                    ctx.fillText(line, canvas.width / 2, currentY);
+                }
             }
         }
 
