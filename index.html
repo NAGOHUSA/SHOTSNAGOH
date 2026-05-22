@@ -6,10 +6,320 @@
     <title>NAGOH Shots - App Store Screenshot Maker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,700;1,300;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* NAGOH Shots - Complete Inline Stylesheet */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --cream:    #fdf8f0;
+            --parchmt:  #f5ede0;
+            --warm:     #ede3d5;
+            --border:   #e0d4c4;
+            --border2:  #d4c4b0;
+            --muted:    #b5a090;
+            --dim:      #8a7868;
+            --sub:      #6b5e50;
+            --ink:      #3d2f24;
+            --deep:     #2a1f16;
+            --rose:     #e8524a;
+            --rose-lt:  #fce8e7;
+            --teal:     #2a9d8f;
+            --teal-lt:  #e0f5f3;
+            --gold:     #e9a028;
+            --gold-lt:  #fdf0d5;
+            --sage:     #4a7c59;
+            --sage-lt:  #e8f4eb;
+            --sage-md:  #a8d4b4;
+            --sans:     'DM Sans', sans-serif;
+            --serif:    'Fraunces', serif;
+        }
+        
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            background: var(--cream);
+            color: var(--ink);
+            font-family: var(--sans);
+        }
+        
+        body { display: flex; flex-direction: column; }
+        
+        /* TOPBAR */
+        .topbar {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            gap: 1rem;
+            background: var(--deep);
+            flex-shrink: 0;
+            border-bottom: 3px solid var(--rose);
+        }
+        
+        .wordmark {
+            font-family: var(--serif);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .wordmark em { color: var(--gold); font-style: italic; }
+        .tagline { font-size: 0.65rem; color: rgba(255,255,255,0.45); }
+        .tsep { flex: 1; }
+        .tpill {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.65);
+        }
+        
+        .tbtn {
+            font-family: var(--sans);
+            font-size: 0.68rem;
+            font-weight: 500;
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.65);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.15s;
+        }
+        
+        .tbtn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        
+        /* MAIN LAYOUT */
+        .main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .canvas-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            min-height: 0;
+        }
+        
+        .canvas-wrapper {
+            flex: 1;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            min-height: 0;
+        }
+        
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 9px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        
+        .btn-primary { background: var(--teal); color: white; }
+        .btn-primary:hover { background: #1f8a7a; }
+        .btn-secondary { background: var(--warm); color: var(--ink); border: 1px solid var(--border); }
+        .btn-secondary:hover { background: var(--parchmt); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        /* SIDEBAR */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+        
+        .panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+        
+        .panel-title {
+            font-family: var(--serif);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 1rem;
+        }
+        
+        .form-group { margin-bottom: 1rem; }
+        .form-group:last-child { margin-bottom: 0; }
+        
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--sub);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: var(--sans);
+            font-size: 0.8rem;
+            color: var(--ink);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--rose);
+            box-shadow: 0 0 0 3px var(--rose-lt);
+        }
+        
+        textarea { resize: vertical; min-height: 70px; }
+        
+        input[type="range"] {
+            padding: 0;
+            height: 5px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--border);
+            border: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--teal);
+            cursor: pointer;
+        }
+        
+        /* Grids */
+        .device-grid, .color-row, .text-controls, .position-grid, .padding-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+        
+        .text-controls, .position-grid, .padding-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+        
+        .text-controls {
+            grid-template-columns: repeat(4, 1fr);
+        }
+        
+        .device-option, .format-btn, .position-btn, .padding-btn {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            text-align: center;
+            transition: all 0.15s;
+            font-weight: 500;
+        }
+        
+        .device-option:hover, .format-btn:hover, .position-btn:hover, .padding-btn:hover {
+            border-color: var(--rose);
+            background: var(--rose-lt);
+        }
+        
+        .device-option.active, .format-btn.active, .position-btn.active, .padding-btn.active {
+            border-color: var(--teal);
+            background: var(--teal-lt);
+            color: var(--teal);
+        }
+        
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+        
+        .emoji-btn {
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .drop-zone {
+            border: 2px dashed var(--border2);
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            background: var(--rose-lt);
+            margin-top: 0.5rem;
+        }
+        
+        .drop-zone:hover { border-color: var(--rose); }
+        
+        .compliance-note {
+            background: var(--sage-lt);
+            border: 1px solid var(--sage-md);
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 0.7rem;
+            color: var(--sage);
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+        
+        @media (max-width: 1024px) {
+            .main { grid-template-columns: 1fr; }
+            .sidebar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-height: 350px; }
+        }
+        
+        @media (max-width: 768px) {
+            .topbar { padding: 0 1rem; }
+            .main { padding: 1rem; }
+            .sidebar { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-    <!-- ── TOPBAR ── -->
+    <!-- TOPBAR -->
     <div class="topbar">
         <div class="wordmark">NAGOH <em>Shots</em></div>
         <div class="tagline">App Store Screenshot Maker</div>
@@ -18,22 +328,18 @@
         <button class="tbtn" id="downloadBtn" disabled>Download PNG</button>
     </div>
 
-    <!-- ── MAIN CONTENT ── -->
+    <!-- MAIN -->
     <div class="main">
-        <!-- Canvas Section -->
         <div class="canvas-section">
-            <div class="canvas-wrapper" id="canvasWrapper">
-                <canvas id="canvas"></canvas>
-            </div>
+            <div class="canvas-wrapper"><canvas id="canvas"></canvas></div>
             <div class="controls">
                 <button class="btn btn-primary" id="uploadBtn">Upload Screenshot</button>
                 <button class="btn btn-secondary" id="resetBtn">Clear All</button>
             </div>
         </div>
 
-        <!-- Sidebar with Panels -->
         <div class="sidebar">
-            <!-- Device Selection Panel -->
+            <!-- Device Selection -->
             <div class="panel">
                 <label class="panel-title">Device Type</label>
                 <div class="device-grid" id="deviceGrid"></div>
@@ -43,25 +349,7 @@
                 </div>
             </div>
 
-            <!-- Theme/Palette Panel -->
-            <div class="panel">
-                <label class="panel-title">Theme</label>
-                <div class="form-group">
-                    <select id="paletteSelect">
-                        <option value="">— No preset yet —</option>
-                        <option value="nagoh-classic">NAGOH Classic</option>
-                        <option value="modern-minimal">Modern Minimal</option>
-                        <option value="vibrant-tech">Vibrant Tech</option>
-                        <option value="sunset">Sunset</option>
-                        <option value="ocean">Ocean</option>
-                        <option value="nature">Nature</option>
-                        <option value="dark-mode">Dark Mode</option>
-                    </select>
-                    <button class="btn btn-secondary" id="savePaletteBtn" style="width: 100%; margin-top: 0.6rem;">+ Save</button>
-                </div>
-            </div>
-
-            <!-- Colors Panel -->
+            <!-- Colors -->
             <div class="panel">
                 <label class="panel-title">Colors</label>
                 <div class="color-row">
@@ -70,77 +358,35 @@
                         <input type="color" id="bgColor" value="#fdf8f0">
                     </div>
                     <div class="form-group">
-                        <label>Accent</label>
-                        <input type="color" id="accentColor" value="#e8524a">
-                    </div>
-                </div>
-                <div class="color-row">
-                    <div class="form-group">
                         <label>Text</label>
                         <input type="color" id="textColor" value="#3d2f24">
                     </div>
                 </div>
             </div>
 
-            <!-- Background Style Panel -->
-            <div class="panel">
-                <label class="panel-title">Background Style</label>
-                <div class="form-group">
-                    <label>Style</label>
-                    <div class="bg-style-grid">
-                        <button class="style-option active" data-style="solid">Solid</button>
-                        <button class="style-option" data-style="gradient">Gradient</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Upload Image</label>
-                    <button class="btn btn-secondary" id="bgUploadBtn" style="width: 100%;">Upload Image</button>
-                    <span class="hint">or paste from clipboard</span>
-                </div>
-            </div>
-
-            <!-- Font Panel -->
-            <div class="panel">
-                <label class="panel-title">Font</label>
-                <div class="form-group">
-                    <label>Family</label>
-                    <select id="fontSelect">
-                        <option value="Fraunces, serif">Fraunces</option>
-                        <option value="DM Sans, sans-serif">DM Sans</option>
-                        <option value="Georgia, serif">Georgia</option>
-                        <option value="monospace">Monospace</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Image Panel -->
+            <!-- Image -->
             <div class="panel">
                 <label class="panel-title">Image</label>
-                <div class="drop-zone" id="dropZone">
-                    <div class="drop-zone-text">Pick file or drop on canvas →<br><span class="hint">or paste from clipboard</span></div>
-                </div>
+                <div class="drop-zone" id="dropZone">Drop image here or click</div>
             </div>
 
-            <!-- Caption Panel -->
+            <!-- Caption -->
             <div class="panel">
                 <label class="panel-title">Caption</label>
-                <div class="form-group">
-                    <textarea id="captionInput" placeholder="Add text *here*" maxlength="200"></textarea>
-                </div>
+                <textarea id="captionInput" placeholder="Add text here"></textarea>
                 <div class="text-controls">
-                    <button class="format-btn" id="boldBtn" title="Bold">B</button>
-                    <button class="format-btn" id="italicBtn" title="Italic">I</button>
-                    <button class="format-btn" id="underlineBtn" title="Underline">U</button>
-                    <button class="format-btn" id="strikeBtn" title="Strikethrough">S</button>
+                    <button class="format-btn" id="boldBtn">B</button>
+                    <button class="format-btn" id="italicBtn">I</button>
+                    <button class="format-btn" id="underlineBtn">U</button>
+                    <button class="format-btn" id="strikeBtn">S</button>
                 </div>
                 <div class="form-group" style="margin-top: 0.8rem;">
                     <label>Size</label>
                     <input type="range" id="fontSize" min="12" max="72" value="24">
-                    <div class="info-badge"><span id="fontSizeValue">24</span>px</div>
                 </div>
             </div>
 
-            <!-- Text Position Panel -->
+            <!-- Position -->
             <div class="panel">
                 <label class="panel-title">Position</label>
                 <div class="position-grid">
@@ -150,37 +396,13 @@
                 </div>
             </div>
 
-            <!-- Subtitle Panel -->
-            <div class="panel">
-                <label class="panel-title">Subtitle</label>
-                <textarea id="subtitleInput" placeholder="Add secondary text" maxlength="100" style="min-height: 50px;"></textarea>
-            </div>
-
-            <!-- Emojis Panel -->
+            <!-- Emojis -->
             <div class="panel">
                 <label class="panel-title">Emojis</label>
                 <div class="emoji-grid" id="emojiGrid"></div>
             </div>
 
-            <!-- Screenshot Preset Panel -->
-            <div class="panel">
-                <label class="panel-title">Screenshot</label>
-                <div class="form-group">
-                    <label>Preset</label>
-                    <select id="presetSelect"></select>
-                </div>
-            </div>
-
-            <!-- Device Frame Panel -->
-            <div class="panel">
-                <label class="panel-title">Add a Device Frame?</label>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="frameToggle">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-
-            <!-- Padding Panel -->
+            <!-- Padding -->
             <div class="panel">
                 <label class="panel-title">Padding</label>
                 <div class="padding-grid">
@@ -189,42 +411,217 @@
                     <button class="padding-btn" data-padding="xtight">X-tight</button>
                 </div>
             </div>
-
-            <!-- 3D Perspective Panel -->
-            <div class="panel">
-                <label class="panel-title">3D Perspective <span class="badge">BETA</span></label>
-                <input type="range" id="perspectiveSlider" min="0" max="30" value="0">
-                <div class="info-badge"><span id="perspectiveValue">0</span>°</div>
-            </div>
-
-            <!-- Status Bar Panel -->
-            <div class="panel">
-                <label class="panel-title">Hide Status Bar</label>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="hideStatusBarToggle">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-
-            <!-- Translate Panel -->
-            <div class="panel">
-                <label class="panel-title">Translate</label>
-                <button class="btn btn-secondary" id="aiCaptionBtn" style="width: 100%; cursor: not-allowed;" disabled title="Coming soon">
-                    🔒 Translate captions with AI
-                </button>
-                <div class="hint" style="margin-top: 0.5rem; text-align: center;">GENERATE APP STORE-READY CAPTIONS</div>
-            </div>
         </div>
     </div>
 
-    <!-- Hidden file inputs -->
     <input type="file" id="fileInput" accept="image/*" style="display: none;">
-    <input type="file" id="bgFileInput" accept="image/*" style="display: none;">
 
-    <!-- Scripts (modular) -->
-    <script src="js/colors.js"></script>
-    <script src="js/devices.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/app.js"></script>
+    <script>
+        // Device specs
+        const DEVICE_SPECS = {
+            'iphone-16-pro': { name: 'iPhone 16 Pro', width: 1290, height: 2796 },
+            'iphone-16-pro-max': { name: 'iPhone 16 Pro Max', width: 1320, height: 2868 },
+            'iphone-15': { name: 'iPhone 15', width: 1170, height: 2532 },
+            'iphone-15-plus': { name: 'iPhone 15 Plus', width: 1290, height: 2796 },
+            'ipad-pro-13': { name: 'iPad Pro 13"', width: 2064, height: 2752 },
+            'ipad-pro-12.9': { name: 'iPad Pro 12.9"', width: 2048, height: 2732 }
+        };
+
+        const EMOJIS = ['👍', '👏', '🎉', '✨', '🚀', '💡', '🔥', '⭐', '💎', '🎯', '📱', '💻', '⚙️', '🛠️', '✅', '❌', '❤️', '😀', '👀', '🌟', '💪', '📈', '🎨', '🔐', '🌍', '📚', '🏆'];
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let state = {
+            image: null,
+            bgColor: '#fdf8f0',
+            textColor: '#3d2f24',
+            caption: '',
+            fontSize: 24,
+            currentDevice: 'iphone-16-pro',
+            textPosition: 'top',
+            padding: 40,
+            fontWeight: 'normal',
+            fontStyle: 'normal'
+        };
+
+        // Initialize device grid
+        function initDevices() {
+            const grid = document.getElementById('deviceGrid');
+            Object.entries(DEVICE_SPECS).forEach(([key, spec]) => {
+                const btn = document.createElement('button');
+                btn.className = 'device-option' + (key === 'iphone-16-pro' ? ' active' : '');
+                btn.dataset.device = key;
+                btn.innerHTML = `<small>${spec.name}</small><tiny>${spec.width}×${spec.height}</tiny>`;
+                btn.addEventListener('click', () => selectDevice(key));
+                grid.appendChild(btn);
+            });
+        }
+
+        function initEmojis() {
+            const grid = document.getElementById('emojiGrid');
+            EMOJIS.forEach(emoji => {
+                const btn = document.createElement('button');
+                btn.className = 'emoji-btn';
+                btn.textContent = emoji;
+                btn.style.background = 'white';
+                btn.style.border = '1px solid var(--border)';
+                btn.style.borderRadius = '4px';
+                btn.style.padding = '4px';
+                btn.onclick = () => { document.getElementById('captionInput').value += emoji; };
+                grid.appendChild(btn);
+            });
+        }
+
+        function selectDevice(key) {
+            state.currentDevice = key;
+            document.querySelectorAll('[data-device]').forEach(b => b.classList.remove('active'));
+            document.querySelector(`[data-device="${key}"]`).classList.add('active');
+            const spec = DEVICE_SPECS[key];
+            document.getElementById('selectedDims').textContent = `${spec.width} × ${spec.height}`;
+            document.getElementById('selectedDevice').textContent = spec.name;
+            redraw();
+        }
+
+        // Event listeners
+        document.getElementById('uploadBtn').onclick = () => document.getElementById('fileInput').click();
+        document.getElementById('fileInput').onchange = (e) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    state.image = img;
+                    document.getElementById('downloadBtn').disabled = false;
+                    redraw();
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(e.target.files[0]);
+        };
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.style.opacity = '0.5'; };
+        dropZone.ondragleave = () => { dropZone.style.opacity = '1'; };
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.style.opacity = '1';
+            if (e.dataTransfer.files.length) document.getElementById('fileInput').files = e.dataTransfer.files;
+        };
+        dropZone.onclick = () => document.getElementById('fileInput').click();
+
+        document.getElementById('bgColor').onchange = (e) => {
+            state.bgColor = e.target.value;
+            redraw();
+        };
+
+        document.getElementById('textColor').onchange = (e) => {
+            state.textColor = e.target.value;
+            redraw();
+        };
+
+        document.getElementById('captionInput').oninput = (e) => {
+            state.caption = e.target.value;
+            redraw();
+        };
+
+        document.getElementById('fontSize').oninput = (e) => {
+            state.fontSize = parseInt(e.target.value);
+            redraw();
+        };
+
+        document.getElementById('boldBtn').onclick = (e) => {
+            e.target.classList.toggle('active');
+            state.fontWeight = e.target.classList.contains('active') ? 'bold' : 'normal';
+            redraw();
+        };
+
+        document.getElementById('italicBtn').onclick = (e) => {
+            e.target.classList.toggle('active');
+            state.fontStyle = e.target.classList.contains('active') ? 'italic' : 'normal';
+            redraw();
+        };
+
+        document.querySelectorAll('[data-position]').forEach(btn => {
+            btn.onclick = (e) => {
+                document.querySelectorAll('[data-position]').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                state.textPosition = e.target.dataset.position;
+                redraw();
+            };
+        });
+
+        document.querySelectorAll('[data-padding]').forEach(btn => {
+            btn.onclick = (e) => {
+                document.querySelectorAll('[data-padding]').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                const paddings = { comfy: 40, tight: 20, xtight: 10 };
+                state.padding = paddings[e.target.dataset.padding];
+                redraw();
+            };
+        });
+
+        document.getElementById('downloadBtn').onclick = () => {
+            const spec = DEVICE_SPECS[state.currentDevice];
+            const filename = `${spec.name.replace(/[^a-z0-9]/gi, '-').toLowerCase()}-${spec.width}x${spec.height}-appstore.png`;
+            const link = document.createElement('a');
+            link.href = canvas.toDataURL('image/png');
+            link.download = filename;
+            link.click();
+        };
+
+        document.getElementById('resetBtn').onclick = () => {
+            state = { image: null, bgColor: '#fdf8f0', textColor: '#3d2f24', caption: '', fontSize: 24, currentDevice: 'iphone-16-pro', textPosition: 'top', padding: 40, fontWeight: 'normal', fontStyle: 'normal' };
+            document.getElementById('fileInput').value = '';
+            document.getElementById('captionInput').value = '';
+            document.getElementById('fontSize').value = '24';
+            document.getElementById('downloadBtn').disabled = true;
+            selectDevice('iphone-16-pro');
+        };
+
+        function redraw() {
+            const spec = DEVICE_SPECS[state.currentDevice];
+            canvas.width = spec.width;
+            canvas.height = spec.height;
+
+            ctx.fillStyle = state.bgColor;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (state.image) {
+                const imgAspect = state.image.width / state.image.height;
+                const canvasAspect = canvas.width / canvas.height;
+                let displayWidth, displayHeight;
+                if (imgAspect > canvasAspect) {
+                    displayWidth = canvas.width * 0.8;
+                    displayHeight = displayWidth / imgAspect;
+                } else {
+                    displayHeight = canvas.height * 0.8;
+                    displayWidth = displayHeight * imgAspect;
+                }
+                const x = (canvas.width - displayWidth) / 2;
+                const y = (canvas.height - displayHeight) / 2;
+                ctx.drawImage(state.image, x, y, displayWidth, displayHeight);
+            }
+
+            if (state.caption) {
+                const fontWeight = state.fontWeight === 'bold' ? 'bold ' : '';
+                const fontStyle = state.fontStyle === 'italic' ? 'italic ' : '';
+                ctx.font = `${fontStyle}${fontWeight}${state.fontSize}px Georgia`;
+                ctx.fillStyle = state.textColor;
+                ctx.textAlign = 'center';
+
+                let y;
+                if (state.textPosition === 'top') y = state.padding;
+                else if (state.textPosition === 'middle') y = canvas.height / 2;
+                else y = canvas.height - state.padding - state.fontSize;
+
+                ctx.fillText(state.caption, canvas.width / 2, y);
+            }
+        }
+
+        // Initialize
+        initDevices();
+        initEmojis();
+        selectDevice('iphone-16-pro');
+    </script>
 </body>
 </html>
