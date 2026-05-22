@@ -24,8 +24,6 @@
             --teal-lt:  #e0f5f3;
             --gold:     #e9a028;
             --gold-lt:  #fdf0d5;
-            --sage:     #4a7c59;
-            --sage-lt:  #e8f4eb;
             --sans:     'DM Sans', sans-serif;
             --serif:    'Fraunces', serif;
         }
@@ -466,6 +464,67 @@
             margin-top: 0;
         }
 
+        /* Multiple Captions Styles */
+        .caption-item {
+            background: rgba(42, 157, 143, 0.08);
+            border-left: 3px solid var(--teal);
+            padding: 0.8rem;
+            border-radius: 4px;
+            margin-bottom: 0.8rem;
+        }
+
+        .caption-item.active {
+            background: rgba(42, 157, 143, 0.15);
+            border-left-color: var(--teal);
+        }
+
+        .caption-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+        }
+
+        .caption-num {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--teal);
+            text-transform: uppercase;
+        }
+
+        .remove-caption {
+            background: var(--rose);
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .remove-caption:hover {
+            background: #d1423a;
+        }
+
+        .add-caption-btn {
+            width: 100%;
+            padding: 8px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            transition: all 0.15s;
+        }
+
+        .add-caption-btn:hover {
+            background: #1f8a7a;
+        }
+
         @media (max-width: 1024px) {
             .main { grid-template-columns: 1fr; }
             .sidebar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; max-height: 350px; }
@@ -616,35 +675,11 @@
                 <div class="drop-zone" id="dropZone">Drop image or click</div>
             </div>
 
-            <!-- Caption -->
+            <!-- Multiple Captions -->
             <div class="panel">
-                <label class="panel-title">Caption</label>
-                <textarea id="captionInput" placeholder="Add text..."></textarea>
-                <div class="grid-4">
-                    <button class="btn-small" id="boldBtn">B</button>
-                    <button class="btn-small" id="italicBtn">I</button>
-                    <button class="btn-small" id="underlineBtn">U</button>
-                    <button class="btn-small" id="strikeBtn">S</button>
-                </div>
-                <label style="margin-top: 1rem;">Size</label>
-                <input type="range" id="fontSize" min="12" max="80" value="32">
-            </div>
-
-            <!-- Position -->
-            <div class="panel">
-                <label class="panel-title">Position</label>
-                <div class="grid-3">
-                    <button class="btn-small active" data-position="top">Top</button>
-                    <button class="btn-small" data-position="middle">Middle</button>
-                    <button class="btn-small" data-position="bottom">Bottom</button>
-                </div>
-                <p class="info-text">Or drag text on canvas</p>
-            </div>
-
-            <!-- Emojis -->
-            <div class="panel">
-                <label class="panel-title">Emojis</label>
-                <div class="emoji-grid" id="emojiGrid"></div>
+                <label class="panel-title">Captions</label>
+                <div id="captionsContainer"></div>
+                <button class="add-caption-btn" id="addCaptionBtn">+ Add Caption</button>
             </div>
         </div>
     </div>
@@ -652,150 +687,66 @@
     <input type="file" id="fileInput" accept="image/*" style="display: none;">
 
     <script>
-        // FAQ Data
+        // FAQ Data (same as before)
         const FAQ_DATA = [
             {
                 category: "Getting Started",
                 items: [
-                    {
-                        q: "What is NAGOH Shots?",
-                        a: "NAGOH Shots is a professional universal image maker for creating screenshots, social media content, product images, and promotional materials. One tool for all your image creation needs."
-                    },
-                    {
-                        q: "Do I need to install anything?",
-                        a: "No! It's a single HTML file that works in any web browser. Just open it and start creating. Works online or offline."
-                    },
-                    {
-                        q: "Is there a cost?",
-                        a: "NAGOH Shots is completely free to use with no registration required."
-                    },
-                    {
-                        q: "Can I use it on my phone?",
-                        a: "Yes! It's fully responsive and works on mobile, tablet, and desktop devices."
-                    }
+                    { q: "What is NAGOH Shots?", a: "NAGOH Shots is a professional universal image maker for creating screenshots, social media content, product images, and promotional materials. One tool for all your image creation needs." },
+                    { q: "Do I need to install anything?", a: "No! It's a single HTML file that works in any web browser. Just open it and start creating. Works online or offline." },
+                    { q: "Is there a cost?", a: "NAGOH Shots is completely free to use with no registration required." },
+                    { q: "Can I use it on my phone?", a: "Yes! It's fully responsive and works on mobile, tablet, and desktop devices." }
                 ]
             },
             {
                 category: "Image Types",
                 items: [
-                    {
-                        q: "What image types are supported?",
-                        a: "Four main types: App Store (iOS/iPad), Social Media (Instagram/TikTok/Twitter/LinkedIn/Facebook), Product (e-commerce/catalog/thumbnails), and Promotional (ads/banners/emails)."
-                    },
-                    {
-                        q: "How many devices are included?",
-                        a: "Over 20 devices! All major iPhone models, iPad variants, and exact dimensions for every social platform and e-commerce size."
-                    },
-                    {
-                        q: "Can I use custom dimensions?",
-                        a: "All presets use exact official dimensions. You can select the device/platform that matches your needs from the dropdown."
-                    }
+                    { q: "What image types are supported?", a: "Four main types: App Store (iOS/iPad), Social Media (Instagram/TikTok/Twitter/LinkedIn/Facebook), Product (e-commerce/catalog/thumbnails), and Promotional (ads/banners/emails)." },
+                    { q: "How many devices are included?", a: "Over 20 devices! All major iPhone models, iPad variants, and exact dimensions for every social platform and e-commerce size." },
+                    { q: "Can I use custom dimensions?", a: "All presets use exact official dimensions. You can select the device/platform that matches your needs from the dropdown." }
                 ]
             },
             {
                 category: "Design Features",
                 items: [
-                    {
-                        q: "What fonts are available?",
-                        a: "Six professional fonts: Fraunces (elegant serif), Playfair Display (luxury serif), DM Sans (modern), Inter (clean), Poppins (playful), and Georgia (classic)."
-                    },
-                    {
-                        q: "What are templates?",
-                        a: "Templates are preset design systems. Click one and it automatically sets colors, fonts, and sizing. Six templates available: Minimal, Vibrant, Elegant, Modern, Warm, and Cool."
-                    },
-                    {
-                        q: "Can I customize colors?",
-                        a: "Yes! Full color pickers for background and text. Or select an audience and get smart color suggestions that match psychological principles."
-                    },
-                    {
-                        q: "What text formatting is available?",
-                        a: "Bold, Italic, Underline, and Strikethrough. Plus adjustable size (12-80px) and full RGB color control."
-                    }
+                    { q: "What fonts are available?", a: "Six professional fonts: Fraunces (elegant serif), Playfair Display (luxury serif), DM Sans (modern), Inter (clean), Poppins (playful), and Georgia (classic)." },
+                    { q: "What are templates?", a: "Templates are preset design systems. Click one and it automatically sets colors, fonts, and sizing. Six templates available: Minimal, Vibrant, Elegant, Modern, Warm, and Cool." },
+                    { q: "Can I customize colors?", a: "Yes! Full color pickers for background and text. Or select an audience and get smart color suggestions that match psychological principles." },
+                    { q: "What text formatting is available?", a: "Bold, Italic, Underline, and Strikethrough. Plus adjustable size (12-80px) and full RGB color control. Now supports multiple captions!" }
                 ]
             },
             {
                 category: "Professional Tools",
                 items: [
-                    {
-                        q: "What are alignment guides?",
-                        a: "Two guides help with professional composition: Grid Guide (Rule of Thirds - divides into 9 sections) and Safe Zone (15% margin to prevent content cutoff)."
-                    },
-                    {
-                        q: "How do I position text?",
-                        a: "Three ways: Use Top/Middle/Bottom buttons for preset positions, OR click and drag the text directly on the canvas for pixel-perfect placement."
-                    },
-                    {
-                        q: "Can I use images from my device?",
-                        a: "Yes! Drag and drop directly onto the canvas, click to upload using file picker, or paste from your clipboard."
-                    },
-                    {
-                        q: "What happens to guides in the export?",
-                        a: "Guides are visual helpers only - they don't appear in your downloaded PNG. Export is always clean and ready to use."
-                    }
+                    { q: "What are alignment guides?", a: "Two guides help with professional composition: Grid Guide (Rule of Thirds - divides into 9 sections) and Safe Zone (15% margin to prevent content cutoff)." },
+                    { q: "How do I position text?", a: "Three ways: Use Top/Middle/Bottom buttons for preset positions, OR click and drag the text directly on the canvas for pixel-perfect placement. Works with all captions!" },
+                    { q: "Can I use images from my device?", a: "Yes! Drag and drop directly onto the canvas, click to upload using file picker, or paste from your clipboard." },
+                    { q: "What happens to guides in the export?", a: "Guides are visual helpers only - they don't appear in your downloaded PNG. Export is always clean and ready to use." }
                 ]
             },
             {
                 category: "Languages & Audience",
                 items: [
-                    {
-                        q: "What languages are supported?",
-                        a: "Eight languages: English, Spanish, French, German, Japanese, Chinese, Portuguese, and Korean. UI translates instantly when you select a language."
-                    },
-                    {
-                        q: "What is audience targeting?",
-                        a: "Select your target audience (like Tech Users, Influencers, Eco-conscious, etc.) and the tool suggests colors that match audience psychology - proven to be more effective."
-                    },
-                    {
-                        q: "Does it translate my text?",
-                        a: "No, only the interface labels translate. Your content text remains as you type it - you can write in any language."
-                    }
+                    { q: "What languages are supported?", a: "Eight languages: English, Spanish, French, German, Japanese, Chinese, Portuguese, and Korean. UI translates instantly when you select a language." },
+                    { q: "What is audience targeting?", a: "Select your target audience (like Tech Users, Influencers, Eco-conscious, etc.) and the tool suggests colors that match audience psychology - proven to be more effective." },
+                    { q: "Does it translate my text?", a: "No, only the interface labels translate. Your content text remains as you type it - you can write in any language." }
+                ]
+            },
+            {
+                category: "Multiple Captions",
+                items: [
+                    { q: "Can I add more than one caption?", a: "Yes! Click '+ Add Caption' to add as many captions as you need. Each caption has its own text, font, size, color, and position." },
+                    { q: "How do I manage multiple captions?", a: "Each caption appears as a separate item in the Captions panel. Click on a caption to select it, then customize its properties. Click the X to remove it." },
+                    { q: "Can each caption have different styling?", a: "Absolutely! Each caption can have its own font, size, color, and position. They're completely independent." },
+                    { q: "How do I drag captions to position them?", a: "Selected caption shows a drag handle on the canvas. Click and drag to position it anywhere. All guides work with all captions!" }
                 ]
             },
             {
                 category: "Export & Download",
                 items: [
-                    {
-                        q: "What format do I get?",
-                        a: "PNG format (lossless quality). Perfect for all platforms - App Store, social media, e-commerce, everything."
-                    },
-                    {
-                        q: "Are dimensions correct?",
-                        a: "Yes! Uses exact official dimensions with no scaling errors. Files are ready for immediate upload to any platform."
-                    },
-                    {
-                        q: "What's the auto-filename?",
-                        a: "Downloads are named like 'iphone-16-pro-1290x2796.png' - includes device and exact dimensions for your records."
-                    }
-                ]
-            },
-            {
-                category: "Audience Profiles",
-                items: [
-                    {
-                        q: "What audience options exist?",
-                        a: "Depends on image type. App Store: Tech/Business/Creative/Casual. Social: Influencers/Brands/Creators/Lifestyle. Product: Premium/Eco/Minimal/Bold. Promo: Sales/Launch/Seasonal/Event."
-                    },
-                    {
-                        q: "How do color suggestions work?",
-                        a: "Each audience gets colors that match their psychology. Tech=Professional Blue, Luxury=Gold, Eco=Green, Influencers=Pink. Proven to increase engagement."
-                    }
-                ]
-            },
-            {
-                category: "Special Features",
-                items: [
-                    {
-                        q: "Can I add emojis?",
-                        a: "Yes! 27 common emojis available for quick insertion into your text. Click any emoji to add it."
-                    },
-                    {
-                        q: "What's the reset button for?",
-                        a: "Clears everything - image, text, colors, fonts, settings. Start fresh with one click."
-                    },
-                    {
-                        q: "Does it work offline?",
-                        a: "Yes! After loading the page, everything works offline. Perfect for when you don't have internet."
-                    }
+                    { q: "What format do I get?", a: "PNG format (lossless quality). Perfect for all platforms - App Store, social media, e-commerce, everything." },
+                    { q: "Are dimensions correct?", a: "Yes! Uses exact official dimensions with no scaling errors. Files are ready for immediate upload to any platform." },
+                    { q: "What's the auto-filename?", a: "Downloads are named like 'iphone-16-pro-1290x2796.png' - includes device and exact dimensions for your records." }
                 ]
             }
         ];
@@ -851,10 +802,9 @@
 
         initializeFAQ();
 
-        // All the previous code continues below...
-        // (I'll add the full application logic next)
-
-        // All Features Combined in One File
+        // ============================================
+        // MULTIPLE CAPTIONS SYSTEM
+        // ============================================
 
         const LANGUAGES = {
             en: { device: 'Device', font: 'Font', image: 'Image', caption: 'Caption', position: 'Position', bg: 'Background', text: 'Text', size: 'Size' },
@@ -952,13 +902,12 @@
             image: null,
             bgColor: '#fdf8f0',
             textColor: '#3d2f24',
-            caption: '',
+            captions: [],
+            selectedCaptionId: null,
             fontSize: 32,
             fontFamily: 'Fraunces, serif',
             currentDevice: 'iphone-16-pro',
             textPosition: 'top',
-            textX: null,
-            textY: null,
             fontWeight: 'normal',
             fontStyle: 'normal',
             imageType: 'appstore',
@@ -967,31 +916,104 @@
             language: 'en'
         };
 
-        let draggingText = false;
+        let draggingText = null;
         let dragOffsetX = 0;
         let dragOffsetY = 0;
+        let nextCaptionId = 1;
+
+        function createCaption() {
+            return {
+                id: nextCaptionId++,
+                text: '',
+                fontSize: 32,
+                fontFamily: 'Fraunces, serif',
+                color: '#3d2f24',
+                position: 'top',
+                fontWeight: 'normal',
+                fontStyle: 'normal',
+                textX: null,
+                textY: null
+            };
+        }
+
+        function selectCaption(id) {
+            state.selectedCaptionId = id;
+            const caption = state.captions.find(c => c.id === id);
+            if (caption) {
+                document.getElementById('captionInput').value = caption.text;
+                document.getElementById('fontSize').value = caption.fontSize;
+                document.getElementById('textColor').value = caption.color;
+                applyFont(caption.fontFamily);
+                // Set position buttons
+                document.querySelectorAll('[data-position]').forEach(b => b.classList.remove('active'));
+                document.querySelector(`[data-position="${caption.position}"]`).classList.add('active');
+                // Set formatting
+                document.getElementById('boldBtn').classList.toggle('active', caption.fontWeight === 'bold');
+                document.getElementById('italicBtn').classList.toggle('active', caption.fontStyle === 'italic');
+            }
+            renderCaptions();
+            redraw();
+        }
+
+        function renderCaptions() {
+            const container = document.getElementById('captionsContainer');
+            container.innerHTML = '';
+            
+            state.captions.forEach((caption, idx) => {
+                const item = document.createElement('div');
+                item.className = 'caption-item' + (caption.id === state.selectedCaptionId ? ' active' : '');
+                item.innerHTML = `
+                    <div class="caption-header">
+                        <span class="caption-num">Caption ${idx + 1}</span>
+                        <button class="remove-caption" data-id="${caption.id}">Remove</button>
+                    </div>
+                    <textarea style="font-size: 0.75rem; padding: 6px; width: 100%; border: 1px solid var(--border); border-radius: 4px; min-height: 50px;" placeholder="Caption text...">${caption.text}</textarea>
+                `;
+                
+                const textarea = item.querySelector('textarea');
+                textarea.addEventListener('change', (e) => {
+                    caption.text = e.target.value;
+                    redraw();
+                });
+                
+                textarea.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectCaption(caption.id);
+                });
+                
+                item.querySelector('.remove-caption').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    state.captions = state.captions.filter(c => c.id !== caption.id);
+                    if (state.selectedCaptionId === caption.id) {
+                        state.selectedCaptionId = state.captions[0]?.id || null;
+                    }
+                    renderCaptions();
+                    redraw();
+                });
+                
+                item.addEventListener('click', () => {
+                    selectCaption(caption.id);
+                });
+                
+                container.appendChild(item);
+            });
+        }
 
         function init() {
             setupEventListeners();
-            initEmojis();
             selectImageType('appstore');
+            // Add first caption
+            addCaption();
         }
 
-        function initEmojis() {
-            const grid = document.getElementById('emojiGrid');
-            EMOJIS.forEach(emoji => {
-                const btn = document.createElement('button');
-                btn.className = 'emoji-btn';
-                btn.textContent = emoji;
-                btn.onclick = () => {
-                    const textarea = document.getElementById('captionInput');
-                    textarea.value += emoji;
-                    state.caption += emoji;
-                    redraw();
-                };
-                grid.appendChild(btn);
-            });
+        function addCaption() {
+            const newCaption = createCaption();
+            state.captions.push(newCaption);
+            selectCaption(newCaption.id);
+            renderCaptions();
         }
+
+        document.getElementById('addCaptionBtn').addEventListener('click', addCaption);
 
         function setupEventListeners() {
             // Image types
@@ -1065,7 +1087,10 @@
             };
 
             document.getElementById('textColor').onchange = (e) => {
-                state.textColor = e.target.value;
+                if (state.selectedCaptionId !== null) {
+                    const caption = state.captions.find(c => c.id === state.selectedCaptionId);
+                    if (caption) caption.color = e.target.value;
+                }
                 redraw();
             };
 
@@ -1109,28 +1134,43 @@
             };
             dropZone.onclick = () => document.getElementById('fileInput').click();
 
-            // Caption
+            // Caption input
             document.getElementById('captionInput').oninput = (e) => {
-                state.caption = e.target.value;
-                redraw();
+                if (state.selectedCaptionId !== null) {
+                    const caption = state.captions.find(c => c.id === state.selectedCaptionId);
+                    if (caption) {
+                        caption.text = e.target.value;
+                        renderCaptions();
+                        redraw();
+                    }
+                }
             };
 
             // Font size
             document.getElementById('fontSize').oninput = (e) => {
-                state.fontSize = parseInt(e.target.value);
+                if (state.selectedCaptionId !== null) {
+                    const caption = state.captions.find(c => c.id === state.selectedCaptionId);
+                    if (caption) caption.fontSize = parseInt(e.target.value);
+                }
                 redraw();
             };
 
             // Text formatting
             document.getElementById('boldBtn').onclick = (e) => {
                 e.target.classList.toggle('active');
-                state.fontWeight = e.target.classList.contains('active') ? 'bold' : 'normal';
+                if (state.selectedCaptionId !== null) {
+                    const caption = state.captions.find(c => c.id === state.selectedCaptionId);
+                    if (caption) caption.fontWeight = e.target.classList.contains('active') ? 'bold' : 'normal';
+                }
                 redraw();
             };
 
             document.getElementById('italicBtn').onclick = (e) => {
                 e.target.classList.toggle('active');
-                state.fontStyle = e.target.classList.contains('active') ? 'italic' : 'normal';
+                if (state.selectedCaptionId !== null) {
+                    const caption = state.captions.find(c => c.id === state.selectedCaptionId);
+                    if (caption) caption.fontStyle = e.target.classList.contains('active') ? 'italic' : 'normal';
+                }
                 redraw();
             };
 
@@ -1139,9 +1179,14 @@
                 btn.onclick = (e) => {
                     document.querySelectorAll('[data-position]').forEach(b => b.classList.remove('active'));
                     e.target.classList.add('active');
-                    state.textPosition = e.target.dataset.position;
-                    state.textX = null;
-                    state.textY = null;
+                    if (state.selectedCaptionId !== null) {
+                        const caption = state.captions.find(c => c.id === state.selectedCaptionId);
+                        if (caption) {
+                            caption.position = e.target.dataset.position;
+                            caption.textX = null;
+                            caption.textY = null;
+                        }
+                    }
                     redraw();
                 };
             });
@@ -1158,13 +1203,12 @@
                     image: null,
                     bgColor: '#fdf8f0',
                     textColor: '#3d2f24',
-                    caption: '',
+                    captions: [],
+                    selectedCaptionId: null,
                     fontSize: 32,
                     fontFamily: 'Fraunces, serif',
                     currentDevice: 'iphone-16-pro',
                     textPosition: 'top',
-                    textX: null,
-                    textY: null,
                     fontWeight: 'normal',
                     fontStyle: 'normal',
                     imageType: 'appstore',
@@ -1172,8 +1216,8 @@
                     guideType: 'grid',
                     language: 'en'
                 };
+                nextCaptionId = 1;
                 document.getElementById('fileInput').value = '';
-                document.getElementById('captionInput').value = '';
                 document.getElementById('fontSize').value = '32';
                 document.getElementById('bgColor').value = '#fdf8f0';
                 document.getElementById('textColor').value = '#3d2f24';
@@ -1197,7 +1241,10 @@
         function applyFont(fontFamily) {
             document.querySelectorAll('[data-font]').forEach(b => b.classList.remove('active'));
             document.querySelector(`[data-font="${fontFamily}"]`).classList.add('active');
-            state.fontFamily = fontFamily;
+            if (state.selectedCaptionId !== null) {
+                const caption = state.captions.find(c => c.id === state.selectedCaptionId);
+                if (caption) caption.fontFamily = fontFamily;
+            }
             redraw();
         }
 
@@ -1206,7 +1253,6 @@
             const typeData = IMAGE_TYPES[type];
             document.getElementById('imageTypeLabel').textContent = typeData.label;
             
-            // Update devices
             const sizeSelect = document.getElementById('sizeSelect');
             sizeSelect.innerHTML = '';
             Object.entries(typeData.devices).forEach(([key, spec]) => {
@@ -1216,7 +1262,6 @@
                 sizeSelect.appendChild(option);
             });
             
-            // Update audiences
             const audienceGrid = document.getElementById('audienceGrid');
             audienceGrid.innerHTML = '';
             Object.entries(typeData.audiences).forEach(([key, audience]) => {
@@ -1239,19 +1284,26 @@
 
         function startDrag(e) {
             const overlays = document.getElementById('textOverlays');
-            const label = overlays.querySelector('.text-label');
-            if (label && label.contains(e.target)) {
-                draggingText = true;
-                dragOffsetX = e.clientX - label.offsetLeft;
-                dragOffsetY = e.clientY - label.offsetTop;
-                label.classList.add('active');
+            const labels = overlays.querySelectorAll('.text-label');
+            for (let label of labels) {
+                if (label.contains(e.target)) {
+                    const captionId = parseInt(label.dataset.captionId);
+                    selectCaption(captionId);
+                    draggingText = captionId;
+                    dragOffsetX = e.clientX - label.offsetLeft;
+                    dragOffsetY = e.clientY - label.offsetTop;
+                    label.classList.add('active');
+                    break;
+                }
             }
         }
 
         function moveDrag(e) {
-            if (!draggingText) return;
+            if (draggingText === null) return;
             const overlays = document.getElementById('textOverlays');
-            const label = overlays.querySelector('.text-label');
+            const label = overlays.querySelector(`[data-caption-id="${draggingText}"]`);
+            if (!label) return;
+            
             const container = document.getElementById('canvasContainer');
             const rect = container.getBoundingClientRect();
             
@@ -1261,17 +1313,21 @@
             const scaleX = canvas.width / canvas.offsetWidth;
             const scaleY = canvas.height / canvas.offsetHeight;
             
-            state.textX = x * scaleX;
-            state.textY = y * scaleY;
+            const caption = state.captions.find(c => c.id === draggingText);
+            if (caption) {
+                caption.textX = x * scaleX;
+                caption.textY = y * scaleY;
+            }
             
             redraw();
         }
 
         function endDrag() {
-            draggingText = false;
+            if (draggingText === null) return;
             const overlays = document.getElementById('textOverlays');
-            const label = overlays.querySelector('.text-label');
+            const label = overlays.querySelector(`[data-caption-id="${draggingText}"]`);
             if (label) label.classList.remove('active');
+            draggingText = null;
         }
 
         function drawGuidanceGrid() {
@@ -1368,56 +1424,61 @@
                 ctx.drawImage(state.image, x, y, displayWidth, displayHeight);
             }
 
-            // Text
-            if (state.caption) {
-                const fontWeight = state.fontWeight === 'bold' ? 'bold ' : '';
-                const fontStyle = state.fontStyle === 'italic' ? 'italic ' : '';
-                ctx.font = `${fontStyle}${fontWeight}${state.fontSize}px ${state.fontFamily}`;
-                ctx.fillStyle = state.textColor;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'top';
+            // Draw all captions
+            const overlays = document.getElementById('textOverlays');
+            overlays.innerHTML = '';
 
-                let textX = canvas.width / 2;
-                let textY;
+            state.captions.forEach(caption => {
+                if (caption.text) {
+                    const fontWeight = caption.fontWeight === 'bold' ? 'bold ' : '';
+                    const fontStyle = caption.fontStyle === 'italic' ? 'italic ' : '';
+                    ctx.font = `${fontStyle}${fontWeight}${caption.fontSize}px ${caption.fontFamily}`;
+                    ctx.fillStyle = caption.color;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
 
-                if (state.textX !== null && state.textY !== null) {
-                    textX = state.textX;
-                    textY = state.textY;
-                } else {
-                    if (state.textPosition === 'top') {
-                        textY = state.fontSize + 40;
-                    } else if (state.textPosition === 'middle') {
-                        ctx.textBaseline = 'middle';
-                        textY = canvas.height / 2;
+                    let textX = canvas.width / 2;
+                    let textY;
+
+                    if (caption.textX !== null && caption.textY !== null) {
+                        textX = caption.textX;
+                        textY = caption.textY;
                     } else {
-                        ctx.textBaseline = 'bottom';
-                        textY = canvas.height - state.fontSize - 40;
+                        if (caption.position === 'top') {
+                            textY = caption.fontSize + 40;
+                        } else if (caption.position === 'middle') {
+                            ctx.textBaseline = 'middle';
+                            textY = canvas.height / 2;
+                        } else {
+                            ctx.textBaseline = 'bottom';
+                            textY = canvas.height - caption.fontSize - 40;
+                        }
                     }
-                }
 
-                const maxWidth = canvas.width - 80;
-                const words = state.caption.split(' ');
-                let line = '';
-                let currentY = textY;
+                    const maxWidth = canvas.width - 80;
+                    const words = caption.text.split(' ');
+                    let line = '';
+                    let currentY = textY;
 
-                words.forEach((word) => {
-                    const testLine = line + (line ? ' ' : '') + word;
-                    const metrics = ctx.measureText(testLine);
-                    
-                    if (metrics.width > maxWidth && line) {
+                    words.forEach((word) => {
+                        const testLine = line + (line ? ' ' : '') + word;
+                        const metrics = ctx.measureText(testLine);
+                        
+                        if (metrics.width > maxWidth && line) {
+                            ctx.fillText(line, textX, currentY);
+                            line = word;
+                            currentY += caption.fontSize + 15;
+                        } else {
+                            line = testLine;
+                        }
+                    });
+                    if (line) {
                         ctx.fillText(line, textX, currentY);
-                        line = word;
-                        currentY += state.fontSize + 15;
-                    } else {
-                        line = testLine;
                     }
-                });
-                if (line) {
-                    ctx.fillText(line, textX, currentY);
-                }
 
-                updateTextOverlay(textX, textY);
-            }
+                    updateTextOverlay(caption, textX, textY);
+                }
+            });
 
             // Guidance
             if (state.guideType === 'grid') {
@@ -1429,21 +1490,23 @@
             }
         }
 
-        function updateTextOverlay(x, y) {
+        function updateTextOverlay(caption, x, y) {
             const overlays = document.getElementById('textOverlays');
             const scaleX = canvas.offsetWidth / canvas.width;
             const scaleY = canvas.offsetHeight / canvas.height;
             
-            let label = overlays.querySelector('.text-label');
-            if (!label) {
-                label = document.createElement('div');
-                label.className = 'text-label';
-                overlays.appendChild(label);
-            }
-            
+            let label = document.createElement('div');
+            label.className = 'text-label';
+            label.dataset.captionId = caption.id;
             label.style.left = (x * scaleX - 20) + 'px';
             label.style.top = (y * scaleY - 25) + 'px';
             label.textContent = '↔ Drag me';
+            
+            if (caption.id === state.selectedCaptionId) {
+                label.classList.add('active');
+            }
+            
+            overlays.appendChild(label);
         }
 
         init();
